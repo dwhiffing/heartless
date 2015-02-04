@@ -1,0 +1,28 @@
+Heartless
+  Phaser.Sprite
+    Entity
+      Player
+        Shadow
+        LifeHeart
+      Enemy
+    Arrow
+    Heart
+  Phaser.Group
+    Bow
+    HeartFactory
+  Phaser.Text
+    PointText
+
+
+Phaser
+  Game
+  Sprite
+  Image
+  Group
+  Text
+  Timer
+  TileSprite
+  State
+  Sound
+  Key
+  Pointer
