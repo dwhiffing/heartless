@@ -18,6 +18,7 @@ module.exports = {
     game.gameStarted = true;
     game.trueHeight = game.height/2;
     game.trueWidth = game.width/2;
+    game.enableHeartTrails = true
     
     this.createBG();
     this.createEntities();
@@ -55,7 +56,9 @@ module.exports = {
     game.trailGroup = game.add.group();
     game.heartGroup.classType = Heart;
     game.heartGroup.createMultiple(15);
-    // for (var i = 0; i< 5; i++){game.player.bow.changeBow(1); game.player.bow.changeBow(2); game.player.bow.changeBow(3); }
+
+    // add some hearts for debugging
+    // for (var i = 0; i< 5; i++){game.player.changeBow(1); game.player.changeBow(2); game.player.changeBow(3); }
   },
 
   updateScore: function(_x, _y, _score, _enemy) {

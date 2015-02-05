@@ -167,6 +167,26 @@ Phaser.Plugin.Juicy.Trail.prototype.constructor = Phaser.Plugin.Juicy.Trail;
 * @memberof Phaser.Plugin.Juicy.Trail
 */
 
+
+/*
+* Draws a {Phaser.Polygon} or a {PIXI.Polygon} filled
+*
+* @method Phaser.Graphics.prototype.drawPolygon
+*/
+
+Phaser.Plugin.Juicy.Trail.prototype.drawPolygon = function (poly) {
+
+    this.moveTo(poly.points[0].x, poly.points[0].y);
+
+    for (var i = 1; i < poly.points.length; i += 1)
+    {
+        this.lineTo(poly.points[i].x, poly.points[i].y);
+    }
+
+    this.lineTo(poly.points[0].x, poly.points[0].y);
+
+};
+
 Phaser.Plugin.Juicy.Trail.prototype.update = function() {
   if(this.target) {
     this.x = this.target.x;
