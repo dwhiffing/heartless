@@ -19,22 +19,6 @@ var Entity = function(x, y, key, group, shadowGroup) {
 Entity.prototype = Object.create(Phaser.Sprite.prototype);
 Entity.prototype.constructor = Entity;
 
-Entity.prototype.preUpdate = function() {
-  if (this.jumping){
-
-    // keep from jumping too far past shadow
-    if(this.y < this.shadow.y-100) {
-      this.y = this.shadow.y-100
-    }
-
-    // land if fallen past shadow
-    if(this.y > this.shadow.y) {
-      this.land();
-    }
-  }
-  Phaser.Sprite.prototype.preUpdate.call(this)
-}
-
 Entity.prototype.update = function() {}
 
 Entity.prototype.move = function(dir, speed) {

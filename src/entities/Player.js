@@ -64,15 +64,30 @@ var Player = function(x, y) {
 Player.prototype = Object.create(Entity.prototype);
 Player.prototype.constructor = Player;
 
+Player.prototype.preUpdate = function() {
+  if (this.jumping){
+    // keep from jumping too far past shadow
+    if(this.y < this.shadow.y-100) {
+      this.y = this.shadow.y-100
+    }
+    // land if fallen past shadow and moving downwards
+    if(this.y > this.shadow.y && this.body.velocity.y > 0) {
+      this.land();
+    }
+  }
+  Phaser.Sprite.prototype.preUpdate.call(this)
+}
+
+
 Player.prototype.update = function() {
   this.inputLogic();
+  this.keepInBounds();
   
   // shadow is used to track 'z' position while jumping
   this.z = this.shadow.y;
   this.x = this.shadow.x || this.x;
   if (!this.jumping) this.y = this.shadow.y;
 
-  this.keepInBounds();
   Entity.prototype.update.call(this);
 }
 
@@ -95,13 +110,28 @@ Player.prototype.inputLogic = function() {
     if (!this.jumping){
       this.jump();
       this.heal(this.numHearts*4);
-      if (this.numHearts > 1) this.resetCombo();
     } 
+  }
+}
+
+Player.prototype.keepInBounds = function() {
+  if (this.shadow.y < game.trueHeight/2) {
+    this.shadow.y = game.trueHeight/2;
+  }
+  else if (this.shadow.y > game.trueHeight){
+    this.shadow.y = game.trueHeight;
+  }
+  if (this.shadow.x < buffer) {
+    this.shadow.x = buffer;
+  }
+  else if (this.shadow.x > game.trueWidth-buffer){
+    this.shadow.x = game.trueWidth-buffer;
   }
 }
 
 Player.prototype.heal = function(healAmount) {
   if (healAmount <= 0) return;
+  this.resetCombo();
   // FlxG.play(healWAV, 0.5);
   this.health += Math.ceil(healAmount);
   if (this.health > 100) {
@@ -119,37 +149,6 @@ Player.prototype.resetCombo = function() {
   this.bow.resetStats();
   this.heartCounts = [0,0,0,0]
   game.heartGroup.callAllExists("fly", true);
-}
-
-Player.prototype.move = function(dir, speed) {
-  // the player moves via his shadow
-  this.shadow.body.velocity[dir] = speed;
-}
-
-Player.prototype.shoot = function() {
-  // the player can only shoot while walking
-  if (!this.jumping){
-    Entity.prototype.shoot.call(this);
-  }
-}
-
-Player.prototype.jump = function(_enemy) {
-  Entity.prototype.jump.call(this);
-}
-
-Player.prototype.keepInBounds = function() {
-  if (this.shadow.y < game.trueHeight/2) {
-    this.shadow.y = game.trueHeight/2;
-  }
-  else if (this.shadow.y > game.trueHeight){
-    this.shadow.y = game.trueHeight;
-  }
-  if (this.shadow.x < buffer) {
-    this.shadow.x = buffer;
-  }
-  else if (this.shadow.x > game.trueWidth-buffer){
-    this.shadow.x = game.trueWidth-buffer;
-  }
 }
 
 Player.prototype.hit = function(_enemy) { //landed on enemy
@@ -198,6 +197,22 @@ Player.prototype.endInvulnerablity = function() {
   this.flicker.pause();
   this.animations.play("walk"); 
   this.alpha = 1;
+}
+
+Player.prototype.move = function(dir, speed) {
+  // the player moves via his shadow
+  this.shadow.body.velocity[dir] = speed;
+}
+
+Player.prototype.shoot = function() {
+  // the player can only shoot while walking
+  if (!this.jumping){
+    Entity.prototype.shoot.call(this);
+  }
+}
+
+Player.prototype.jump = function(_enemy) {
+  Entity.prototype.jump.call(this);
 }
 
 Player.prototype.reset = function(x, y, v) {
