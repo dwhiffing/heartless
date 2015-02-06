@@ -56,10 +56,15 @@ Heart.prototype.createTrail = function(type) {
   }
   this.trail.trailLength = 0; 
   game.time.events.add(200, function(){
-    this.trail.trailLength = 10;
+    this.trail.trailLength =2
   }, this)
   this.trail.target = this
   this.trail.trailColor = this.typeToColour(type)
+  var self = this
+  setInterval(function(){
+      self.trail.addSegment(self.x, self.y);
+      self.trail.redrawSegments(self.x, self.y);
+    }, 150);
 }
 
 Heart.prototype.typeToColour = function(type) {

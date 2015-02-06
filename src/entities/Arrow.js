@@ -22,23 +22,26 @@ Arrow.prototype.shoot = function(opts) {
       speed = opts.speed || 10,
       pierce = opts.pierce || 0,
       spread = opts.spread || 0,
+      power = opts.power || 1,
       frame = opts.frame || 'whi';
 	this.reset(x, y)
 
-  this.power = 1;
-  this.lifespan = 4000;
+  this.power = opts.power;
 
 	this.animations.play(frame);
-	this.health = 1
+	this.health = pierce;
 	this.body.velocity.x = -speed + Math.floor(Math.random() * (spray - ( -spray) + 1) + ( -spray));
 	this.body.velocity.y = Math.floor(Math.random() * (spread - ( -spread) + 1) + ( -spread));
 	this.lastEnemy = null;
 }
 
+Arrow.prototype.update = function(_enemy) {
+  if (this.x < -10) this.kill()
+}
 Arrow.prototype.hit = function(_enemy) {
 	if (this.lastEnemy != _enemy && !_enemy.jumping) {
 		this.lastEnemy = _enemy;
-    _enemy.damage(0.5)
+    _enemy.damage(this.power)
 		this.damage(1);
 	};
 }

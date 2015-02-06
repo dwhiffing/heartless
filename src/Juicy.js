@@ -123,7 +123,7 @@ Phaser.Plugin.Juicy.Trail = function(game, trailLength, color) {
   /**
   * @property {number} trailLength - The number of segments to use to create the trail
   */
-  this.trailLength = trailLength || 100;
+  this.trailLength = trailLength || 10;
   /**
   * @property {number} trailWidth - The width of the trail
   */
@@ -191,8 +191,6 @@ Phaser.Plugin.Juicy.Trail.prototype.update = function() {
   if(this.target) {
     this.x = this.target.x;
     this.y = this.target.y;
-    this.addSegment(this.target.x, this.target.y);
-    this.redrawSegments(this.target.x, this.target.y);
   }
 };
 

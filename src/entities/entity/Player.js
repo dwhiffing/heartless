@@ -161,7 +161,7 @@ Player.prototype.hit = function(_enemy) { //landed on enemy
   if (_enemy.y < this.shadow.y + 15 && _enemy.y > this.shadow.y - 15 && this.body.velocity.y > 0) {
     if (this.jumping && !_enemy.jumping) {
       this.jump(_enemy);
-      _enemy.damage(_enemy.jumpDamage);
+      _enemy.damage(_enemy.jumpDamage, true);
       this.changeBow(_enemy.heartType);
     }
   }
@@ -181,7 +181,7 @@ Player.prototype.changeBow = function(type) {
   }, this)
   
   this.heartCounts[type]++;
-  // this.bow.updateStats(this.heartCounts)
+  this.bow.updateStats(this.heartCounts)
 }
 
 Player.prototype.damage = function(damage) {

@@ -1,4 +1,3 @@
-var firerate, power, speed, pain, spread, shell, shootTimer, pierce;
 // a bow manages an entities ability to shoot arrows
 // and what stats those arrows have
 var Bow = function(parent) {
@@ -11,25 +10,30 @@ Bow.prototype = Object.create(Object)
 Bow.prototype.constructor = Bow;
 
 Bow.prototype.resetStats = function() {
+	// the amount of milliseconds between shots
 	this.event.delay = firerate = 1000;
-	power = 10;
-	speed = 200;
-	spread = 10;
-	shell = 1;
-	pierce = 1;
-	shootTimer = 90; 
+	// the amount of damage the bullets do
+	power = 10; 
+	// the speed that the bullets move
+	speed = 200; 
+	// the amount that the bullets deviate up/down
+	spread = 10; 
+	// the amount of bullets fired per shot
+	shell = 1; 
+	// the amount of enemies a bullet can hit before dying
+	pierce = 1; 
 }
 
 Bow.prototype.updateStats = function(heartCounts) {
 	var numRed = heartCounts[1];
 	var numYellow = heartCounts[2];
 	var numBlue = heartCounts[3];
-	power = (10 + 0.5 * numRed)/numBlue;
+	speed = (200 + 20 * numRed)- 4*numYellow;
+	power = (2 + 1 * numRed)/(((numBlue+numYellow)/8)+1);
 	pierce = 1 + Math.floor(0.5 * numRed);
-	this.event.delay = firerate = 1000/(numYellow*1.3)+1;
+	this.event.delay = firerate = 1000/((numYellow*0.5)+1);
 	shell = 1 + numBlue;
-	spread = 10 - (6*numRed) + (3*numYellow) + (6*numBlue);
-
+	spread = Math.max(0, (10 + (3*numYellow + 6*numBlue) - (6*numRed)-speed/6));
 	if (power < 1) power = 1;
 }
 
@@ -49,6 +53,7 @@ Bow.prototype.shoot = function(x,y) {
 				speed: speed,
 				spread: spread,
 				pierce: pierce,
+				power: power,
 				frame:'whi'
 			}
 			bullet.shoot(opts);
