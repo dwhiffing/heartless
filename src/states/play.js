@@ -1,14 +1,13 @@
 var Player = require('../entities/entity/Player.js');
 var Arrow = require('../entities/Arrow.js');
 var Spawner = require('../entities/Spawner.js');
+var Joystick = require('../Joystick.js');
 var DisplayGroup = require('../lib/DisplayGroup.js');
 
 var title, ground, sky;
 
 module.exports = {
   create: function() {
-    game.joystick = game.plugins.add(new Phaser.Plugin.VirtualJoystick(this))
-    game.juicy = game.plugins.add(new Phaser.Plugin.Juicy(this))
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.arcade.gravity.y = 550;
     game.score = 0;
@@ -16,11 +15,13 @@ module.exports = {
     game.gameStarted = true;
     game.trueHeight = game.height/2;
     game.trueWidth = game.width/2;
-    game.enableHeartTrails = true
+    // game.enableHeartTrails = true
     
     this.createBG();
     this.createEntities();
     // createGUI();
+    this.game.joystick = this.game.plugins.add(Joystick);
+    this.game.joystick.inputEnable();
   },
   
   createBG: function() {
@@ -46,7 +47,7 @@ module.exports = {
     game.entityGroup.add(game.player);
 
     // add some hearts for debugging
-    // for (var i = 0; i< 5; i++){game.player.changeBow(1); game.player.changeBow(2); game.player.changeBow(3); }
+    // for (var i = 0; i< 3; i++){game.player.changeBow(1);game.player.changeBow(2); game.player.changeBow(3);}
   },
 
   updateScore: function(_x, _y, _score, _enemy) {

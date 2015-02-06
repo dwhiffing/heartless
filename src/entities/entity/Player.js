@@ -111,7 +111,12 @@ Player.prototype.inputLogic = function() {
   else if (cursors.right.isDown) {
     this.move('x', this.runSpeed)
   }
-
+  if(!cursors.left.isDown && !cursors.right.isDown && !cursors.up.isDown && !cursors.down.isDown){
+    if(game.joystick.speed){
+      this.move('x', -game.joystick.speed.x)
+      this.move('y', -game.joystick.speed.y)
+    }
+  }
   if (space.isDown) {
     if (!this.jumping){
       this.jump();
