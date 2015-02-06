@@ -1,12 +1,12 @@
 var lastHeart, multi, bestMulti, numHearts, cursors, soul, space, buffer;
-var Entity = require('../entities/Entity.js');
-var Bow = require('../entities/Bow.js');
+var Entity = require('./Entity.js');
+var Bow = require('../Bow.js');
+var Heart = require('../Heart.js');
 
 // the Player is defined as a Phaser.Sprite
 var Player = function(x, y) {
   Entity.call(this, x, y, "player");
   this.name = "Player";
-
   this.body.height = 30;
 
   // extra offset is required here to center soul onto entity
@@ -25,6 +25,7 @@ var Player = function(x, y) {
   this.shadow.body.allowGravity = false;
   this.shadow.body.maxVelocity.set(this.runSpeed, this.runSpeed/2.2);
   this.shadow.body.drag.set(550);
+  game.backGroup.add(this.shadow);
 
   // create a collection of animations based on the frames in our spritesheet,
   // play at 2 frames per second and loop
@@ -47,6 +48,11 @@ var Player = function(x, y) {
   multi = bestMulti = 1;
 
   this.heartCounts = [0,0,0,0];
+
+  game.trailGroup = game.add.group();
+  game.heartGroup = game.add.group();
+  game.heartGroup.classType = Heart;
+  game.heartGroup.createMultiple(15);
 
   cursors = game.input.keyboard.createCursorKeys();
   space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
@@ -156,7 +162,7 @@ Player.prototype.hit = function(_enemy) { //landed on enemy
     if (this.jumping && !_enemy.jumping) {
       this.jump(_enemy);
       _enemy.damage(_enemy.jumpDamage);
-      this.changeBow(_enemy.type);
+      this.changeBow(_enemy.heartType);
     }
   }
   if ((!this.jumping && !_enemy.jumping) || (this.jumping && _enemy.jumping)) {

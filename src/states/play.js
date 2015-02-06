@@ -1,8 +1,6 @@
-var Player = require('../entities/Player.js');
+var Player = require('../entities/entity/Player.js');
 var Arrow = require('../entities/Arrow.js');
 var Spawner = require('../entities/Spawner.js');
-var Enemy = require('../entities/Enemy.js');
-var Heart = require('../entities/Heart.js');
 var DisplayGroup = require('../lib/DisplayGroup.js');
 
 var title, ground, sky;
@@ -40,22 +38,12 @@ module.exports = {
     game.arrowGroup.classType = Arrow;
     game.arrowGroup.createMultiple(100, 'arrow', 0)
 
-    game.enemyGroup = game.add.group();
-    game.enemyGroup.classType = Enemy;
-    game.enemyGroup.createMultiple(5);
-
     game.spawner = new Spawner();
     game.player = new Player(game.trueWidth-200, game.trueHeight/4);
-    game.backGroup.add(game.player.shadow);
     
     game.entityGroup = new DisplayGroup();
     game.entityGroup.add(game.enemyGroup);
     game.entityGroup.add(game.player);
-    
-    game.heartGroup = game.add.group();
-    game.trailGroup = game.add.group();
-    game.heartGroup.classType = Heart;
-    game.heartGroup.createMultiple(15);
 
     // add some hearts for debugging
     // for (var i = 0; i< 5; i++){game.player.changeBow(1); game.player.changeBow(2); game.player.changeBow(3); }

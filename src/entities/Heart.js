@@ -68,7 +68,7 @@ Heart.prototype.typeToColour = function(type) {
   } else if (type == 1) {
     return 0xff0000
   } else if (type == 2) {
-    return 0x00ff00
+    return 0xffff00
   } else if (type == 3) {
     return 0x0000ff
   }

@@ -1,5 +1,3 @@
-var Juicy = require('../Juicy.js');
-var Joystick = require('../Joystick.js');
 module.exports = {
   constructor: function() {
     this.loadingSprite = null;
@@ -8,8 +6,8 @@ module.exports = {
   preload: function() {
     this.loadingSprite = this.add.sprite(320, 480, 'preloader');
     this.loadingSprite.anchor.setTo(0.5, 0.5);
-    game.juicy = game.plugins.add(Juicy);
-    game.joystick = game.plugins.add(Joystick);
+    game.juicy = game.plugins.add(require('../Juicy.js'));
+    game.joystick = game.plugins.add(require('../Joystick.js'));
 
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     this.load.setPreloadSprite(this.loadingSprite);
@@ -21,7 +19,7 @@ module.exports = {
     this.load.spritesheet('skeleton', 'images/skeleton.gif', 32, 42)
     this.load.spritesheet('soldier', 'images/soldier.gif', 32, 42)
     this.load.spritesheet('helmet', 'images/helmet.gif', 32, 42 )
-    this.load.spritesheet('bee', 'images/bee.gif')
+    this.load.spritesheet('bee', 'images/bee.gif', 32, 42)
     this.load.spritesheet('heart', 'images/heart.gif', 7,7)
     this.load.spritesheet('soul', 'images/pHeart.gif', 5,5)
     this.load.image('shadow', 'images/shadow.gif')
