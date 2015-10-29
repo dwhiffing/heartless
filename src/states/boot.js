@@ -11,7 +11,7 @@ module.exports = {
 
     // auto pause if window loses focus
     this.stage.disableVisibilityChange = true;
-    
+
     // set up scale mode
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;
@@ -27,7 +27,7 @@ module.exports = {
 
     game.state.start('load', true, false);
   },
-  
+
   enterIncorrectOrientation: function () {
     game.orientated = false;
     document.getElementById('orientation').style.display = 'block';
