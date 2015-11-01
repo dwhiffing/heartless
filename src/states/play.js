@@ -1,98 +1,126 @@
-var Player = require('../entities/entity/Player.js');
-var Arrow = require('../entities/Arrow.js');
-var Spawner = require('../entities/Spawner.js');
-var Joystick = require('../Joystick.js');
-var DisplayGroup = require('../lib/DisplayGroup.js');
+import Player from '../entities/entity/Player'
+import Arrow from '../entities/Arrow'
+import Spawner from '../entities/Spawner'
+import HeartManager from '../entities/HeartManager'
+import DisplayGroup from '../lib/DisplayGroup'
 
-var title, ground, sky;
+export default {
+  create() {
+    game.physics.startSystem(Phaser.Physics.ARCADE)
+    game.physics.arcade.gravity.y = 550
+    game.score = 0
+    game.halfHeight = game.height/2
+    game.halfWidth = game.width/2
 
-module.exports = {
-  create: function() {
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.physics.arcade.gravity.y = 550;
-    game.score = 0;
-    game.musicPlaying = false;
-    game.gameStarted = true;
-    game.trueHeight = game.height/2;
-    game.trueWidth = game.width/2;
+    this.cursors = game.input.keyboard.createCursorKeys()
+    this.space = game.input.keyboard.addKey(
+      Phaser.Keyboard.SPACEBAR
+    )
+
+    this.createBG()
+    this.createEntities()
+    // this.createGUI()
+
     // game.enableHeartTrails = true
-    
-    this.createBG();
-    this.createEntities();
-    // createGUI();
-    this.game.joystick = this.game.plugins.add(Joystick);
-    this.game.joystick.inputEnable();
-  },
-  
-  createBG: function() {
-    game.backGroup = game.add.group();
-    sky = game.add.tileSprite(0,0, game.width, game.height, "sky");
-    ground = game.add.tileSprite(0,0, game.width, game.height, "ground");
-    ground.autoScroll(30,0);
-    sky.autoScroll(5,0);
-    game.backGroup.add(sky);
-    game.backGroup.add(ground);
-  },
-
-  createEntities: function() {
-    game.arrowGroup = game.add.group();
-    game.arrowGroup.classType = Arrow;
-    game.arrowGroup.createMultiple(100, 'arrow', 0)
-
-    game.spawner = new Spawner();
-    game.player = new Player(game.trueWidth-200, game.trueHeight/4);
-    
-    game.entityGroup = new DisplayGroup();
-    game.entityGroup.add(game.enemyGroup);
-    game.entityGroup.add(game.player);
+    game.heartManager = new HeartManager
 
     // add some hearts for debugging
-    // for (var i = 0; i< 3; i++){game.player.changeBow(1);game.player.changeBow(2); game.player.changeBow(3);}
+    for (var i = 0; i< 3; i++) {
+      game.heartManager.getHeart(1)
+      game.heartManager.getHeart(2)
+      game.heartManager.getHeart(3)
+    }
   },
 
-  updateScore: function(_x, _y, _score, _enemy) {
-    var pnt = pointTxt(game.pointGroup.getFirstAvailable(pointTxt));
-    pnt.recycle(_enemy.x + 20, _enemy.y);
+  createBG() {
+    this.sky = game.add.tileSprite(0,0, game.width, game.height, "sky")
+    this.sky.autoScroll(5,0)
+
+    this.ground = game.add.tileSprite(0,0, game.width, game.height, "ground")
+    this.ground.autoScroll(30,0)
+
+    game.backGroup = game.add.group()
+    game.backGroup.add(this.sky)
+    game.backGroup.add(this.ground)
+  },
+
+  createEntities() {
+    game.arrowGroup = game.add.group()
+    game.arrowGroup.classType = Arrow
+    game.arrowGroup.createMultiple(100, 'arrow', 0)
+
+    game.spawner = new Spawner()
+    game.player = new Player(game.halfWidth-200, game.halfWidth/4)
+
+    game.entityGroup = new DisplayGroup()
+    game.entityGroup.add(game.enemyGroup)
+    game.entityGroup.add(game.player)
+  },
+
+  createGUI() {
+    game.gui.classType = Phaser.Text
+    game.gui = game.add.group()
+    game.pointGroup = game.add.group()
+
+    game.instruct = new Instructions()
+
+    this.title = game.gui.create(10, 15, 'title')
+    this.sub = game.gui.create(0, 35, 'sub1')
+    this.bars = game.gui.create(0, 0, 'bars')
+    this.scoreTxt = game.gui.create(150, 5, "")
+    this.finalScoreTxt = game.gui.crate(100, 125, "")
+  },
+
+  update() {
+    this.checkInput()
+    this.updateEntities()
+    // this.updateGUI()
+  },
+
+  checkInput() {
+    if (this.cursors.up.isDown) {
+      game.player.move('y', -1)
+    }
+    else if (this.cursors.down.isDown) {
+      game.player.move('y', 1)
+    }
+    if (this.cursors.left.isDown) {
+      game.player.move('x', -1)
+    }
+    else if (this.cursors.right.isDown) {
+      game.player.move('x', 1)
+    }
+    if (this.space.isDown) {
+      game.player.tryJump()
+    }
+  },
+
+  updateEntities() {
+    game.entityGroup.sort('z', Phaser.Group.SORT_ASCENDING)
+    game.physics.arcade.overlap(
+      game.player, game.enemyGroup,
+      (player, enemy) => {player.hit(enemy)},
+      null, this
+    )
+    game.physics.arcade.overlap(
+      game.arrowGroup, game.enemyGroup,
+      (arrow, enemy) => {arrow.hit(enemy)},
+      null, this
+    )
+  },
+
+  updateGUI() {
+    scoreTxt.text = game.score.toString()
+    var pnt = pointTxt(game.pointGroup.getFirstAvailable(pointTxt))
+    pnt.recycle(_enemy.x + 20, _enemy.y)
     pnt.text = int((_score * multi))
-      .toString();
-    score += int((_score * multi));
-    if (jumping) multi += 0.25;
-    if (multi > bestMulti) bestMulti = multi;
-  },
-  
-  createGUI: function() {
-    game.gui.classType = Phaser.Text;
-    game.gui = game.add.group();
-    game.pointGroup = game.add.group();
-
-    game.instruct = new Instructions();
-
-    title = game.gui.create(10, 15, 'title')
-    sub = game.gui.create(0, 35, 'sub1')
-    bars = game.gui.create(0, 0, 'bars')
-    scoreTxt = game.gui.create(150, 5, "");
-    finalScoreTxt = game.gui.crate(100, 125, "");
+      .toString()
+    score += int((_score * multi))
+    if (jumping) multi += 0.25
+    if (multi > bestMulti) bestMulti = multi
   },
 
-  update: function() {
-    game.physics.arcade.overlap(game.player, game.enemyGroup, this.collidePlayer, null, this);
-    game.physics.arcade.overlap(game.arrowGroup, game.enemyGroup, this.collideArrows, null, this);
-    game.entityGroup.sort('z', Phaser.Group.SORT_ASCENDING);
-  },
-
-  collidePlayer: function(player, enemy) { //player and enemy collisions
-    player.hit(enemy); 
-  },
-
-  collideArrows: function(arrow, enemy) { //player and enemy collisions
-    arrow.hit(enemy);
-  },
-  
-  updateGUI: function() {
-    scoreTxt.text = Reg.player.score.toString();
-  },
-  
-  render: function() {
-    // game.debug.body(game.player);
+  render() {
+    // game.debug.body(game.player)
   }
 }

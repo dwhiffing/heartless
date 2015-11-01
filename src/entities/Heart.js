@@ -1,91 +1,86 @@
-var type, mAngle, dist;
+export default class Heart extends Phaser.Sprite{
+  constructor(game, opts) {
+    super(game, -20, -20, 'heart')
+    this.anchor.set(0.5, 0.5)
+    game.physics.enable(this)
+    this.body.enable = false
+    this.dist = 35
+  	this.kill()
+  }
 
-var Heart = function(game, opts) {
-  Phaser.Sprite.call(this, game, -20, -20, "heart");
-	this.anchor.set(0.5, 0.5)
-  dist = 35;
-  this.alpha = 0.9;
-  game.physics.enable(this);
-  this.body.enable = false;
-	this.kill();
-}
+  update() {
+    if (!this.alive || this.flying) return
 
-Heart.prototype = Object.create(Phaser.Sprite.prototype)
-Heart.prototype.constructor = Heart;
-
-Heart.prototype.update = function() {
-  if (this.alive) {
-    if (!this.flying) {
-      this.x = game.player.x+2 + dist * Math.cos(this.mAngle);
-      this.y = game.player.y - game.player.height/2 + dist * Math.sin(this.mAngle);
-      this.mAngle += 0.02;
-      if (this.mAngle >= 6.316) this.mAngle = 0;
+    this.x = game.player.x + 2 + this.dist * Math.cos(this.mAngle)
+    this.y = game.player.y - game.player.height/2 + this.dist * Math.sin(this.mAngle)
+    this.mAngle += 0.02
+    if (this.mAngle >= 6.316) {
+      this.mAngle = 0
     }
   }
-}
 
-Heart.prototype.recycle = function(_type) {
-	this.reset(300, 300);
-  this.mAngle = 0;
-	type = _type;
-  this.body.enable = false;
-	this.flying = false;
-  this.tint = this.typeToColour(type)
-  this.createTrail(type);
-}
-
-Heart.prototype.fly = function(_enemy) {
-	var dx = (game.player.x) - (this.x);
-	var dy = (game.player.y-30) - (this.y);
-	var a = Math.atan2(dy, dx);
-  this.body.enable = true;
-  this.body.velocity.x = Math.cos(a) * 300; 
-  this.body.velocity.y = Math.sin(a) * 300;
-  this.flying = true;
-	this.lifespan = 150;
-}
-
-Heart.prototype.createTrail = function(type) {
-  if (!game.enableHeartTrails) return
-  if (!this.trail) {
-    this.trail = game.juicy.createTrail(1, 0xffffaa);
-    this.trail.trailScaling = true;
-    this.trail.alpha = 0.35;
-    this.trail.trailWidth = 5;
-    game.trailGroup.add(this.trail);
+  recycle(_type) {
+  	this.reset(300, 300)
+    this.mAngle = 0
+  	this.type = _type
+    this.body.enable = false
+  	this.flying = false
+    this.tint = this.typeToColour()
+    this.createTrail()
   }
-  this.trail.trailLength = 0; 
-  game.time.events.add(200, function(){
-    this.trail.trailLength =2
-  }, this)
-  this.trail.target = this
-  this.trail.trailColor = this.typeToColour(type)
-  var self = this
-  setInterval(function(){
-      self.trail.addSegment(self.x, self.y);
-      self.trail.redrawSegments(self.x, self.y);
-    }, 150);
-}
 
-Heart.prototype.typeToColour = function(type) {
-  if (type == 0) {
-    return 0xffffff
-  } else if (type == 1) {
-    return 0xff0000
-  } else if (type == 2) {
-    return 0xffff00
-  } else if (type == 3) {
-    return 0x0000ff
+  fly(_enemy) {
+  	var dx = (game.player.x) - (this.x)
+  	var dy = (game.player.y-30) - (this.y)
+  	var a = Math.atan2(dy, dx)
+    this.body.enable = true
+    this.body.velocity.x = Math.cos(a) * 300
+    this.body.velocity.y = Math.sin(a) * 300
+    this.flying = true
+  	this.lifespan = 150
   }
-}
 
-Heart.prototype.kill = function() {
-  if (this.trail) {
+  createTrail() {
+    if (!game.enableHeartTrails) return
+    if (!this.trail) {
+      this.trail = game.juicy.createTrail(1, 0xffffaa)
+      this.trail.trailScaling = true
+      this.trail.alpha = 0.35
+      this.trail.trailWidth = 5
+      game.trailGroup.add(this.trail)
+    }
+    this.trail.trailLength = 0
     game.time.events.add(200, function(){
-      this.trail.target = null;
+      this.trail.trailLength =2
     }, this)
+    this.trail.target = this
+    this.trail.trailColor = this.typeToColour()
+    var self = this
+    setInterval(() => {
+      self.trail.addSegment(self.x, self.y)
+      self.trail.redrawSegments(self.x, self.y)
+    }, 150)
   }
-  this.body.enable = false;
-  Phaser.Sprite.prototype.kill.call(this);
+
+  typeToColour() {
+    if (this.type == 0) {
+      return 0xffffff
+    } else if (this.type == 1) {
+      return 0xff0000
+    } else if (this.type == 2) {
+      return 0xffff00
+    } else if (this.type == 3) {
+      return 0x0000ff
+    }
+  }
+
+  kill() {
+    if (this.trail) {
+      game.time.events.add(200, function(){
+        this.trail.target = null
+      }, this)
+    }
+    this.body.enable = false
+    super.kill()
+  }
 }
-module.exports = Heart

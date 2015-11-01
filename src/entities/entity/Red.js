@@ -1,16 +1,13 @@
-var Enemy = require('./Enemy.js');
+import Enemy from './Enemy'
 
-var Red = function() {
-  this.name = "Enemy";
-  this.heartType = 1;
-  Enemy.call(this, 200, 200, "soldier");
-  this.numJumps = 1;   
-  this.maxHealth =20;
-  this.minSpeed = 35;
-  this.maxSpeed = 85;
+export default class Red extends Enemy {
+  constructor() {
+    super(200, 200, 'soldier')
+
+    this.heartType = 1
+    this.numJumps = 1
+    this.maxHealth = 20
+    this.minSpeed = 35
+    this.maxSpeed = 85
+  }
 }
-
-Red.prototype = Object.create(Enemy.prototype)
-Red.prototype.constructor = Red;
-
-module.exports = Red

@@ -1,64 +1,68 @@
-var jumpHeight, invTimer;
-
-// #ntity is an abstract class that enemy and player inherit from
+// Entity is an abstract class that enemy and player inherit from
 // its purpose is to reduce duplication between enemy/player
-var Entity = function(x, y, key, group, shadowGroup) {
-  Phaser.Sprite.call(this, game, x, y, key);
-  
-  // entity anchor is defined as the center of its 'feet'
-  // ( halfway across its x, and at the bottom of its y ) // this makes jumping easier
-  this.anchor.setTo(0.5, 1)
-  game.physics.enable(this)
-  this.body.allowGravity = false;
+export default class Entity extends Phaser.Sprite {
+  constructor(x, y, key) {
+    super(game, x, y, key)
 
-  this.runSpeed = 100;
-  this.jumping = false;
-  this.body.height = 70;
-}
+    // entity anchor is defined as the center of its 'feet'
+    // ( halfway across its x, and at the bottom of its y ) // this makes jumping easier
+    this.anchor.setTo(0.5, 1)
+    game.physics.enable(this)
+    this.body.allowGravity = false
 
-Entity.prototype = Object.create(Phaser.Sprite.prototype);
-Entity.prototype.constructor = Entity;
-
-Entity.prototype.update = function() {}
-
-Entity.prototype.move = function(dir, speed) {
-  this.body.velocity[dir] = speed;
-}
-
-Entity.prototype.jump = function() {
-  this.jumping = true;
-  this.body.allowGravity = true;
-  this.body.velocity.y = -300;
-  this.animations.play("jump");
-}
-
-Entity.prototype.land = function() {
-  this.jumping = false;
-  this.body.allowGravity = false;
-  this.body.velocity.y = 0
-  this.animations.play("walk");
-}
-
-Entity.prototype.shoot = function() {
-  this.bow.shoot(this.x-this.width/1.5, this.y-18)
-}
-
-Entity.prototype.damage = function(damage) {
-  this.animations.play("hurt");
-  // FlxG.play(hurtWAV);
-  Phaser.Sprite.prototype.damage.call(this, damage)
-}
-
-Entity.prototype.kill = function() {
-  if (this.shadow) {
-    this.shadow.kill();
+    this.runSpeed = 100
+    this.jumping = false
+    this.body.height = 70
   }
-  Phaser.Sprite.prototype.kill.call(this)
-}
 
-Entity.prototype.reset = function(x, y) {
-  this.animations.play("walk");
-  Phaser.Sprite.prototype.reset.call(this, x, y);
-}
+  update() {}
 
-module.exports = Entity
+  move(dir, invert) {
+    if (this.shadow) {
+      this.shadow.body.velocity[dir] = this.runSpeed * invert
+    } else {
+      this.body.velocity[dir] = this.runSpeed * invert
+    }
+  }
+
+  jump() {
+    this.jumping = true
+    this.body.allowGravity = true
+    this.body.velocity.y = -300
+    this.animations.play("jump")
+  }
+
+  land() {
+    this.jumping = false
+    this.body.allowGravity = false
+    this.body.velocity.y = 0
+    this.animations.play("walk")
+  }
+
+  shoot() {
+    if (!this.jumping || this.shootsInAir) {
+      this.bow.shoot(this.x-this.width/1.5, this.y-18)
+    }
+  }
+
+  damage(damage) {
+    super.damage(damage)
+    this.animations.play("hurt")
+  }
+
+  kill() {
+    super.kill()
+
+    if (this.shadow) {
+      this.shadow.kill()
+    }
+  }
+
+  reset(x, y) {
+    super.reset(x, y)
+    if (this.shadow) [
+      this.shadow.reset(x, y)
+    ]
+    this.animations.play("walk")
+  }
+}

@@ -1,21 +1,24 @@
-var timer;
+export default PointText extends Phaser.Text {
+	constructor(game, opts) {
+		super(10, 10, 50)
+		this.kill()
+		this.color = 0xffFF00FF
+		this.timer = 40
+	}
 
-var PointText = function(game, opts) {
-	super(10, 10, 50); kill(); color = 0xffFF00FF;
-}
+	update() {
+		if (this.alive) {
+			if (this.timer < 0) {
+				this.kill()
+				this.timer = 40
+			}
+			this.y -= 0.5
+			this.timer--
+		}
+	}
 
-PointText.prototype = Object.create(Phaser.Text.prototype)
-PointText.prototype.constructor = PointText;
-
-PointText.prototype.update = function() {
-	if (alive) {
-		if (Timer < 0) { kill(); Timer = 40; }
-		y -= 0.5; Timer--;
+	reset(x, y) {
+		super(x, y)
+		this.timer = 40
 	}
 }
-PointText.prototype.recycle = function(_speed, _spread, _pierce) {
-	reset(_x, _y);
-	Timer = 40;
-}
-
-module.exports = PointText
