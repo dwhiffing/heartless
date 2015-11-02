@@ -2,17 +2,21 @@ import Heart from './Heart'
 
 export default class HeartManager {
   constructor() {
-    game.trailGroup = game.add.group()
-    game.heartGroup = game.add.group()
-    game.heartGroup.classType = Heart
-    game.heartGroup.createMultiple(15)
+    game.heartTrails = game.add.group()
+    game.hearts = game.add.group()
+    game.hearts.classType = Heart
+    this.maxHearts = 16
+    game.hearts.createMultiple(this.maxHearts)
   }
   getHeart(type) {
-    var heart = game.heartGroup.getFirstDead()
-    heart.recycle(type)
-    game.heartGroup.children.filter(c => c.alive)
-      .forEach((heart, index, hearts) => {
+    let heart = game.hearts.getFirstDead() || game.hearts.filter(h => h.order == game.player.nextHeart).list[0]
+    if (heart) {
+      heart.order = game.player.nextHeart
+      heart.recycle(type)
+      let hearts = game.hearts.children.filter(c => c.alive)
+      hearts.forEach((heart, index, hearts) => {
         heart.mAngle = (index*(360/hearts.length))/57
       })
+    }
   }
 }

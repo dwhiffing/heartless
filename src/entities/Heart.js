@@ -34,6 +34,7 @@ export default class Heart extends Phaser.Sprite{
   	var dy = (game.player.y-30) - (this.y)
   	var a = Math.atan2(dy, dx)
     this.body.enable = true
+    this.alive = false
     this.body.velocity.x = Math.cos(a) * 300
     this.body.velocity.y = Math.sin(a) * 300
     this.flying = true
@@ -47,7 +48,7 @@ export default class Heart extends Phaser.Sprite{
       this.trail.trailScaling = true
       this.trail.alpha = 0.35
       this.trail.trailWidth = 5
-      game.trailGroup.add(this.trail)
+      game.trails.add(this.trail)
     }
     this.trail.trailLength = 0
     game.time.events.add(200, function(){

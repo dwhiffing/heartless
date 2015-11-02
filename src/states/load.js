@@ -10,10 +10,11 @@ export default {
     this.load.image('sky', 'images/sky.gif')
     this.load.image('title', 'images/title.png')
 
-    this.load.spritesheet('arrow', 'images/arrow.gif', 10, 5)
+    this.load.spritesheet('arrow', 'images/arrow.png', 10, 5)
     this.load.spritesheet('heart', 'images/heart.gif', 7,7)
     this.load.spritesheet('soul', 'images/pHeart.gif', 5,5)
     this.load.image('shadow', 'images/shadow.gif')
+    game.load.spritesheet('explosion', 'images/explosion.png', 128, 128);
 
     this.load.spritesheet('player', 'images/player.gif', 32, 40)
 

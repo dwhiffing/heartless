@@ -5,9 +5,7 @@ import helpers from '../../lib/helpers'
 export default class Player extends Entity {
   // the Player is defined as a Phaser.Sprite
   constructor(x, y) {
-    super(x, y, "player")
-
-    this.name = "Player"
+    super(x, y, "player", true)
     this.body.height = 30
 
     // extra offset is required here to center soul onto entity
@@ -20,18 +18,6 @@ export default class Player extends Entity {
     this.soul.animations.play('life', 0)
     this.addChild(this.soul)
 
-     // shadow anchor is defined as its absolute center
-    // shadow not added, we need to control it separately
-    this.shadow = game.add.sprite(x, y, "shadow")
-    this.shadow.anchor.setTo(0.5, 0.5)
-    game.physics.enable(this.shadow)
-    this.shadow.body.allowGravity = false
-    this.shadow.body.maxVelocity.set(
-      this.runSpeed, this.runSpeed/2.2
-    )
-    this.shadow.body.drag.set(550)
-    game.backGroup.add(this.shadow)
-
     // create animations based on frames in spritesheet
     // play at 2 frames per second and loop
     this.animations.add('walk', [0, 1], 2, true)
@@ -43,79 +29,47 @@ export default class Player extends Entity {
 
     // create a Bow to track player weapon stats
     this.bow = new Bow(this)
-
-    this.jumpHeight = 500
-    this.invulnerableTime = 1500
-    this.health = this.maxHealth = 100
-    this.buffer = 50
     this.multi = 1
     this.bestMulti = 1
-  }
-
-  preUpdate() {
-    super.preUpdate(this)
-    if (this.jumping){
-      // keep from jumping too far past shadow
-      if(this.y < this.shadow.y-100) {
-        this.y = this.shadow.y-100
-      }
-      // land if fallen past shadow and moving downwards
-      if(this.y > this.shadow.y && this.body.velocity.y > 0) {
-        this.land()
-      }
-    }
+    this.nextHeart = 0
   }
 
   update() {
     super.update()
-    helpers.keepInBounds(this.shadow)
+  }
 
-    // shadow is used to track 'z' position while jumping
-    this.z = this.shadow.y
-    this.x = this.shadow.x
+  jump(enemy) {
     if (!this.jumping) {
-      this.y = this.shadow.y
-    }
-  }
-
-  tryJump() {
-    if (!this.jumping){
-      this.jump()
-      let numHearts = game.heartGroup.filter(c=>c.alive).length
+      game.hearts.callAllExists("fly", true)
+      this.bow.update()
+      let numHearts = game.hearts.filter(c=>c.alive).length
       this.heal(numHearts * 4)
+      this.bow.update()
+    }
+    if (enemy || !this.jumping) {
+      super.jump()
     }
   }
 
-  heal(healAmount) {
-    if (healAmount <= 0) return
-    this.resetCombo()
-    this.health += Math.ceil(healAmount)
-    if (this.health > 100) {
-      this.health = 100
-    }
-    this.tint = 0x00ff00
-    game.time.events.add(500, function(){
-      this.tint = 0xffffff
-    }, this)
-  }
-
-  resetCombo() {
-    this.bow.resetStats()
-    game.heartGroup.callAllExists("fly", true)
-  }
-
-  hit(_enemy) { //landed on enemy
-    if (_enemy.y < this.shadow.y + 15 && _enemy.y > this.shadow.y - 15 && this.body.velocity.y > 0) {
-      if (this.jumping && !_enemy.jumping) {
-        this.jump(_enemy)
-        _enemy.damage(_enemy.jumpDamage, true)
-        game.heartManager.getHeart(_enemy.heartType)
-        this.bow.update()
+  overlapEntity(entity) { //landed on enemy
+    if (entity.y < this.shadow.y + 15 && entity.y > this.shadow.y - 15 && this.body.velocity.y > 0) {
+      if (this.jumping && !entity.jumping) {
+        this.jump(entity)
+        entity.damage(entity.jumpDamage, true)
       }
     }
-    if ((!this.jumping && !_enemy.jumping) || (this.jumping && _enemy.jumping)) {
-      this.damage(_enemy.damage)
+    if ((!this.jumping && !entity.jumping) || (this.jumping && entity.jumping)) {
+      this.damage(entity.damage)
     }
+  }
+
+  newHeart(type) {
+    game.heartManager.getHeart(type)
+    this.nextHeart++
+    if (this.nextHeart>game.heartManager.maxHearts-1) {
+      this.nextHeart = 0
+    }
+    this.bow.update()
   }
 
   damage(damage) {
@@ -130,6 +84,6 @@ export default class Player extends Entity {
 
   triggerInvulnerablity() {
     this.invulnerable = true
-    helpers.flickerSprite(this)
+    helpers.flickerSprite(this, 1500)
   }
 }
