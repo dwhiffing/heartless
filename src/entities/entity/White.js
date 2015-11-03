@@ -7,7 +7,7 @@ export default class White extends Enemy {
     this.heartType = 0
     this.numJumps = 1
     this.maxHealth = 10
-    this.minSpeed = 45
-    this.maxSpeed = 95
+    this.minSpeed = 5
+    this.maxSpeed = 35
   }
 }

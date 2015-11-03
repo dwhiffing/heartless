@@ -16,7 +16,7 @@ export default class Entity extends Phaser.Sprite {
     this.runSpeed = 100
     this.jumping = false
     this.buffer = 50
-    this.body.height = 70
+    this.body.height = 50
 
     if (hasShadow) {
      // shadow anchor is defined as its absolute center
@@ -100,10 +100,7 @@ export default class Entity extends Phaser.Sprite {
 
   heal(amount) {
     if (amount <= 0) return
-    this.health += Math.ceil(amount)
-    if (this.health > this.maxHealth) {
-      this.health = this.maxHealth
-    }
+    super.heal(amount)
     this.tint = 0x00ff00
     helpers.delay(500, () => this.tint = 0xFFFFFF)
   }

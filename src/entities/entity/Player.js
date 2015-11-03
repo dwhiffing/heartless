@@ -42,7 +42,7 @@ export default class Player extends Entity {
     if (!this.jumping) {
       game.hearts.callAllExists("fly", true)
       this.bow.update()
-      let numHearts = game.hearts.filter(c=>c.alive).length
+      let numHearts = game.hearts.filter(c => c.alive).length
       this.heal(numHearts * 4)
       this.bow.update()
     }
@@ -52,13 +52,13 @@ export default class Player extends Entity {
   }
 
   overlapEntity(entity) { //landed on enemy
-    if (entity.y < this.shadow.y + 15 && entity.y > this.shadow.y - 15 && this.body.velocity.y > 0) {
+    if (entity.y < this.shadow.y + 8 && entity.y > this.shadow.y - 8 && this.body.velocity.y > 0) {
       if (this.jumping && !entity.jumping) {
         this.jump(entity)
         entity.damage(entity.jumpDamage, true)
       }
     }
-    if ((!this.jumping && !entity.jumping) || (this.jumping && entity.jumping)) {
+    if (this.jumping == entity.jumping) {
       this.damage(entity.damage)
     }
   }

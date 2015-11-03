@@ -17,17 +17,17 @@ export default class Enemy extends Entity {
 		if(this.x > game.halfWidth+50) {
 	    this.kill()
 	  }
-		if (this.velocity && this.velocity.x < this.maxSpeed) {
-			this.body.velocity.x += 0.05
+		if (this.body.velocity.x < this.maxSpeed) {
+			this.body.velocity.x += 0.1
 		}
 		Entity.prototype.update.call(this)
 	}
 
 	reset() {
 	  super.reset(-30, game.rnd.integerInRange(130, 230), this.maxHealth)
+	  this.runSpeed = game.rnd.integerInRange(this.minSpeed, this.maxSpeed)
 	  this.body.velocity.x = this.runSpeed
 		this.jumpDamage = this.health/this.numJumps
-	  this.runSpeed = game.rnd.integerInRange(this.minSpeed, this.maxSpeed)
 	}
 
 	kill() {
@@ -39,17 +39,20 @@ export default class Enemy extends Entity {
 		super.kill()
 	}
 
-	damage(damage, jumpedOn) {
+	damage(damage, jumpedOn, slow=3) {
+		if (this.damaged) return
 		this.jumpedOn = jumpedOn
+		this.damaged = true
 		super.damage(jumpedOn ? this.jumpDamage : damage)
 
 		game.time.events.add(500, function() {
+			this.damaged = false
+			this.alpha = 1
 	    this.animations.play("walk")
-	    this.alpha = 1
 	  }, this)
 
-	  this.alpha = 0.7
-		this.body.velocity.x /= 3
+		this.alpha = 0.5
+		this.body.velocity.x /= slow
 	}
 
 	jump() {

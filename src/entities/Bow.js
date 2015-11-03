@@ -4,6 +4,7 @@ import helpers from '../lib/helpers'
 export default class Bow {
 	constructor(parent) {
 		this.parent = parent
+		this.name = "bow"
 	  this.event = game.time.events.loop(Phaser.Timer.SECOND, this.parent.shoot, this.parent);
 		this.update();
 	}
@@ -33,19 +34,25 @@ export default class Bow {
 		speed = 200,
 		// the amount milliseconds between firing
 		rate = 1500,
+		// the amount a hit devides the enemy speed
+		slow = 4,
 		// the amount of bullets fired per shot
 		shell = 1,
 		// how far bullets will travel
 		range = game.halfWidth * 0.7,
 		// the amount that the bullets deviate up/down
-		spreadY = 10,
+		spreadY = 20,
 		// the amount that the bullet speed deviates
-		spreadX = 0,
+		spreadX = 20,
 		// the amount of enemies a bullet can hit before dying
-		pierce = 1
+		pierce = 1,
+
+		sizeX = null,
+		sizeY = null,
+		callback = () => {}
 
 		// first check if hearts are pure, then set up according to proportions
-		if (r > 0 && y == 0 && b == 0) {
+		if (w == 0 && r > 0 && y == 0 && b == 0) {
 			type = 1
 			size = size + 0.28 * r
 			power = power + 10 * r
@@ -56,16 +63,17 @@ export default class Bow {
 			spreadY = spreadY + 0.2 * r
 			spreadX = spreadX + 3 * r
 			pierce = Math.floor(2 * r)+1
-		} else if (r == 0 && y > 0 && b == 0) {
+		} else if (w == 0 && r == 0 && y > 0 && b == 0) {
 			type = 2
 			speed = speed + 12 * y
 			power = 50 + Math.pow(16 - y, 2)
 			rate = 50 + Math.pow(16 - y, 2)
 			radius = radius + 0.02 * y
 			range = range - 7 * y
+			slow = 1
 			spreadY = spreadY + 0.1 * y
 			spreadX = spreadX + 5 * y
-		} else if (r == 0 && y == 0 && b > 0) {
+		} else if (w == 0 && r == 0 && y == 0 && b > 0) {
 			type = 3
 			size = size - 0.07 * b
 			power = power + b / 10
@@ -77,10 +85,27 @@ export default class Bow {
 			spreadY = spreadY + 10 * b
 			spreadX = spreadX + 3 * b
 			pierce = pierce + 2 * b
+		} else if (w || r || y || b) {
+			// finally, set up for a mix instead
+			// mix is similar to pure effects but weaker
+			type = 0
+			size = size + r/4 - b/20
+			power = power + r*4 - b + y*2
+			radius = radius + r/2.5 - y/2 - b/2
+			speed = speed - r*3 + y*20 - b
+			shell = shell + b/2
+			slow = 1
+			rate = rate + r*4 - y*100 + b*4
+			range = range + r*3 - y*10 - b*10
+			spreadX = spreadX - r*2 + b*2
+			spreadY = spreadY - r*2 + b*1.5
+			pierce = pierce + r*2 - b*2
+
+			power += w
 		}
-		if (r > 0 && b > 0 && r == b) {
-		// next check if hearts are balanced with a secondary
-		// purple - something - slower falling
+		if (w == 0 && y == 0 && r > 0 && b > 0 && r == b) {
+			// next check if hearts are balanced with a secondary
+			// purple - something - slower falling
 			type = 4
 			// size ++
 			// power =
@@ -92,7 +117,8 @@ export default class Bow {
 			// spreadX -
 			// spreadY -
 			// pierce +++
-		} else if (y > 0 && b > 0 && y == b) {
+		}
+		if (w == 0 && r == 0 && y > 0 && b > 0 && y == b) {
 			// green - split / double hearts
 			type = 5
 			// size --
@@ -105,44 +131,45 @@ export default class Bow {
 			// spreadX -
 			// spreadY -
 			// pierce =
-		} else if (r > 0 && y > 0 && r == y) {
+		}
+		if (w == 0 && b == 0 && r > 0 && y > 0 && r == y) {
 			// orange - laser / faster
 			type = 6
-			// size ++
-			// power ++
-			// radius +
-			// speed -
-			// shell =
-			// rate -
-			// range --
-			// spreadX =
-			// spreadY =
-			// pierce +
-		} else {
-			// finally, set up for a mix instead
-			// type = 0
-			// speed = (80 + 20 * r)- 4*y;
-			// power = (2 + 1 * r)/(((b+y)/8)+1);
-			// pierce = 1 + Math.floor(0.5 * r);
-			// rate = 1500/((y*0.5)+1);
-			// shell = 1 + b;
-			// spray = Math.max(0, (10 + (3*y + 6*b) - (6*r)-speed/6));
-			// spread = Math.max(0, (10 + (3*y + 6*b) - (6*r)-speed/6));
-			// range = game.halfWidth*0.4 - 25 * b
+			// size = 1 + r *0.25
+			power = 3 + r*2
+			radius = 0
+			slow = 1 + r*.2
+			speed = 200
+			rate = 50
+			spreadX = 0
+			sizeX = 60
+			sizeY = 1 + r/3
+			range = 0
+			spreadY = 0
+			pierce = 100
+			callback = function(bullet) {
+				bullet.body.width = game.halfWidth
+	      bullet.anchor.setTo(1, 0.5)
+			}
 		}
 
 		this.stats.type = helpers.typeToSting(type)
-		this.stats.size = size
-		this.stats.power = power
-		this.stats.radius = radius
-		this.stats.speed = speed
-		this.stats.shell = shell
-		this.stats.rate = rate
-		this.event.delay = rate
-		this.stats.range = range
-		this.stats.spreadX = spreadX
-		this.stats.spreadY = spreadY
-		this.stats.pierce = pierce
+		this.stats.sizeX = sizeX || Math.clamp(size, 1, 5)
+		this.stats.sizeY = sizeY || Math.clamp(size, 1, 5)
+		this.stats.power = Math.clamp(power, 0.1, 10)
+		this.stats.radius = Math.clamp(radius, 0.5, 10)
+		this.stats.speed = Math.clamp(speed, 50, 1000)
+		this.stats.shell = Math.clamp(shell, 1, 30)
+		this.stats.slow = Math.clamp(slow, 1, 5)
+		this.stats.rate = Math.clamp(rate, 10, 3000)
+		this.stats.range = Math.clamp(range, 5, 2000)
+		this.stats.spreadX = Math.clamp(spreadX, 0, 50)
+		this.stats.spreadY = Math.clamp(spreadY, 0, 100)
+		this.stats.pierce = Math.floor(Math.clamp(pierce, 1, 100))
+
+		this.stats.callback = callback
+		this.event.delay = this.stats.rate
+
 		console.table([this.stats])
 	}
 

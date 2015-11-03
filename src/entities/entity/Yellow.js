@@ -7,7 +7,7 @@ export default class Yellow extends Enemy {
     this.heartType = 2
     this.numJumps = 1
     this.maxHealth = 10
-    this.minSpeed = 115
-    this.maxSpeed = 125
+    this.minSpeed = 135
+    this.maxSpeed = 305
   }
 }

@@ -6,9 +6,9 @@ export default {
 
   create() {
     // set up scale mode
-    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
-    this.scale.pageAlignHorizontally = true
-    this.scale.pageAlignVertically = true
+    game.scale.scaleMode = Phaser.ScaleManager.NONE
+    // this.scale.pageAlignHorizontally = true
+    // this.scale.pageAlignVertically = true
 
     // double the world scale since assets are at 1/2 size
     game.world.scale.setTo(2,2)

@@ -7,10 +7,12 @@ window.game = new Phaser.Game(
   450, // height
   Phaser.AUTO, // renderer: AUTO, CANVAS, WEBGL, or HEADLESS
   'game-container', // element to mount canvas to
-  BootState, // initial state
-  false, // transparent bg
+  null, // initial state
+  null, // transparent bg
   false // anti-alias
 )
 
+game.state.add('boot', BootState)
 game.state.add('load', LoadState)
 game.state.add('play', PlayState)
+game.state.start('boot')

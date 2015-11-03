@@ -8,8 +8,9 @@ import helpers from '../lib/helpers'
 
 export default {
   create() {
+    Math.clamp = (a,b,c) => Math.max(b,Math.min(c,a))
     game.physics.startSystem(Phaser.Physics.ARCADE)
-    game.physics.arcade.gravity.y = 220
+    game.physics.arcade.gravity.y = 270
     game.score = 0
     game.halfHeight = game.height/2
     game.halfWidth = game.width/2
@@ -24,16 +25,19 @@ export default {
 
     this.createBG()
     game.arrowGroup = game.add.group()
+    game.arrowGroup.name = "arrowGroup"
     game.arrowGroup.classType = Arrow
     game.arrowGroup.createMultiple(100, 'arrow', 0)
 
     game.blasts = new BlastGroup();
+    game.blasts.name = "BlastGroup"
     game.spawner = new Spawner()
     this.createGUI()
     game.heartManager = new HeartManager
     game.player = new Player(game.halfWidth-200, game.halfWidth/4)
 
     game.entityGroup = new DisplayGroup()
+    game.entityGroup.name = "entityGroup"
     game.entityGroup.add(game.enemyGroup)
     game.entityGroup.add(game.player)
     // game.enableHeartTrails = true
@@ -48,12 +52,15 @@ export default {
     this.ground.autoScroll(30,0)
 
     game.backGroup = game.add.group()
+    game.backGroup.name = "backGroup"
     game.backGroup.add(this.sky)
     game.backGroup.add(this.ground)
   },
 
   createGUI() {
     game.ui = {}
+    game.textGroup = game.add.group()
+    game.textGroup.name = "textGroup"
     let leftStrings = {
       score: 'score: 0',
       multi: 'multi: 0',
@@ -68,7 +75,10 @@ export default {
     let startX = game.halfWidth/3
 
     let opts = {font: '7pt Arial'}
-    helpers.addText(startX, 10,'rates:', opts)
+    let ratesText = helpers.addText(startX, 10,'rates:', opts)
+    let heartsText = helpers.addText(startX, 20,'hearts:', opts)
+    game.textGroup.add(ratesText)
+    game.textGroup.add(heartsText)
     let rateStrings = {
       whiteRate: game.spawner.rates[0],
       redRate: game.spawner.rates[1],
@@ -77,7 +87,6 @@ export default {
     }
     this.createDebugList(rateStrings, startX+35, 10, 20, 0, opts)
 
-    helpers.addText(startX, 20,'hearts:', opts)
     let heartStrings = {
       whiteHeart: '0',
       redHeart: '0',
@@ -95,6 +104,7 @@ export default {
         list[key],
         opts
       )
+      game.textGroup.add(game.ui[key+'Text'])
     })
   },
 
@@ -134,6 +144,12 @@ export default {
   },
 
   render() {
+    // game.enemyGroup.filter(a => a.alive).list.forEach(e => {
+    //   game.debug.body(e)
+    // })
+    // game.arrowGroup.filter(a => a.alive).list.forEach(e => {
+    //   game.debug.body(e)
+    // })
     // game.debug.body(game.player)
   },
 
@@ -143,8 +159,8 @@ export default {
       heartRed: Phaser.KeyCode.TWO,
       heartYellow: Phaser.KeyCode.THREE,
       heartBlue: Phaser.KeyCode.FOUR,
-      togglePlayerHitbox: Phaser.KeyCode.OPEN_BRACKET,
-      toggleEnemyHitbox: Phaser.KeyCode.CLOSE_BRACKET,
+      toggleEntityHitbox: Phaser.KeyCode.OPEN_BRACKET,
+      toggleArrowHitbox: Phaser.KeyCode.CLOSE_BRACKET,
       decWhiteSpawn: Phaser.KeyCode.NINE,
       incWhiteSpawn: Phaser.KeyCode.ZERO,
       decRedSpawn: Phaser.KeyCode.O,
