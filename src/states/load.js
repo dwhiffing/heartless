@@ -2,8 +2,8 @@ import Juicy from '../lib/Juicy'
 import debugPlugin from 'phaser-debug'
 export default {
   preload() {
-    game.juicy = game.plugins.add(Juicy)
-    game.add.plugin(Phaser.Plugin.Inspector);
+    this.game.juicy = this.game.plugins.add(Juicy)
+    this.game.add.plugin(Phaser.Plugin.Inspector);
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this)
 
     this.load.image('ground', 'images/ground.gif')
@@ -14,7 +14,7 @@ export default {
     this.load.spritesheet('heart', 'images/heart.gif', 7,7)
     this.load.spritesheet('soul', 'images/pHeart.gif', 5,5)
     this.load.image('shadow', 'images/shadow.gif')
-    game.load.spritesheet('explosion', 'images/explosion.png', 128, 128);
+    this.game.load.spritesheet('explosion', 'images/explosion.png', 128, 128);
 
     this.load.spritesheet('player', 'images/player.gif', 32, 40)
 
@@ -25,6 +25,6 @@ export default {
   },
 
   onLoadComplete() {
-    game.state.start('play', true, false)
+    this.game.state.start('play', true, false)
   }
 }

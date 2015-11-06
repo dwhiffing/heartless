@@ -1,14 +1,14 @@
 export default {
   keepInBounds(entity) {
-    if (entity.y < game.halfHeight/2) {
-      entity.y = game.halfHeight/2
-    } else if (entity.y > game.halfHeight){
-      entity.y = game.halfHeight
+    if (entity.y < entity.game.height/4) {
+      entity.y = entity.game.height/4
+    } else if (entity.y > entity.game.height/2){
+      entity.y = entity.game.height/2
     }
     if (entity.x < 50) {
       entity.x = 50
-    } else if (entity.x > game.halfWidth-50){
-      entity.x = game.halfWidth-50
+    } else if (entity.x > entity.game.width/2-50){
+      entity.x = entity.game.width/2-50
     }
   },
 
@@ -22,17 +22,13 @@ export default {
     return words[type]
   },
 
-  delay(time, fn) {
-    game.time.events.add(time, fn)
-  },
-
   flickerSprite(sprite, time=1500, flicker, callback) {
     flicker = flicker || function() {
       this.alpha = (this.alpha === 0.5) ? 0.8 : 0.5
     }
 
     if (!sprite.flicker) {
-      sprite.flicker = game.time.create(false)
+      sprite.flicker = sprite.game.time.create(false)
       sprite.flicker.loop(time/6, flicker, sprite)
       sprite.flicker.start()
       sprite.flicker.pause()
@@ -40,7 +36,7 @@ export default {
 
     sprite.flicker.resume()
 
-    game.time.events.add(time, () => {
+    sprite.game.time.events.add(time, () => {
       sprite.invulnerable = false
       sprite.flicker.pause()
       sprite.animations.play("walk")
@@ -50,12 +46,12 @@ export default {
       }
     }, sprite)
   },
-  addText(x, y, string, opts) {
+  addText(game, x, y, string, opts) {
     if (x < 0) {
-      x = game.halfWidth+x
+      x = game.width/2+x
     }
     if (y < 0) {
-      y = game.halfHeight+y
+      y = game.height/2+y
     }
     opts = opts || {}
     opts = Object.assign({font: '9pt Arial', fill: '#ffffff'}, opts)

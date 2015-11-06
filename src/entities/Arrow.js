@@ -1,6 +1,7 @@
 export default class Arrow extends Phaser.Sprite {
   constructor(game, x, y, key, frame) {
     super(game, x, y, 'arrow', frame)
+    this.game = game
     this.animations.add('white', [0])
     this.animations.add('red', [1])
     this.animations.add('yellow', [2])
@@ -22,6 +23,7 @@ export default class Arrow extends Phaser.Sprite {
     this.range = opts.range + Math.random() * 20
     this.radius = opts.radius/12
   	this.animations.play(opts.type)
+    this.push = opts.push
     this.scale.setTo(opts.sizeX, opts.sizeY)
   	this.health = opts.pierce
     this.slow = opts.slow
@@ -36,7 +38,7 @@ export default class Arrow extends Phaser.Sprite {
   }
 
   update() {
-    if (this.x < this.startX - this.range || this.x > game.halfWidth + 500) {
+    if (this.x < this.startX - this.range || this.x > this.game.width/2 + 500) {
       this.kill()
     }
   }
@@ -44,24 +46,24 @@ export default class Arrow extends Phaser.Sprite {
   kill() {
     if (!this.alive) return
     if (this.radius > 0) {
-      game.blasts.get(this.x, this.y, this.radius)
+      this.game.blasts.get(this.x, this.y, this.radius)
       this.getInRangeForDamage().forEach(e => e.damage(this.power))
     }
     super.kill()
   }
 
   getInRangeForDamage() {
-    return game.enemyGroup.filter((r) => this.getDist(r) < this.radius*100).list
+    return this.game.enemies.filter((r) => this.getDist(r) < this.radius*100).list
   }
 
   getDist(target) {
-    return game.math.distance(this.x, this.y, target.x, target.y);
+    return this.game.math.distance(this.x, this.y, target.x, target.y);
   }
 
   overlapEntity(entity) {
   	if (this.lastEnemy != entity && !entity.jumping) {
   		this.lastEnemy = entity
-      entity.damage(this.power, false, this.slow)
+      entity.damage(this.power, false, this.slow, this.push)
   		this.damage(1)
   	}
   }

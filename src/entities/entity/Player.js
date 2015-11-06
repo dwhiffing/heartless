@@ -4,8 +4,8 @@ import helpers from '../../lib/helpers'
 
 export default class Player extends Entity {
   // the Player is defined as a Phaser.Sprite
-  constructor(x, y) {
-    super(x, y, "player", true)
+  constructor(game, x, y) {
+    super(game, x, y, "player", true)
     this.body.height = 30
 
     // extra offset is required here to center soul onto entity
@@ -40,9 +40,9 @@ export default class Player extends Entity {
 
   jump(enemy) {
     if (!this.jumping) {
-      game.hearts.callAllExists("fly", true)
+      this.game.hearts.callAllExists("fly", true)
       this.bow.update()
-      let numHearts = game.hearts.filter(c => c.alive).length
+      let numHearts = this.game.hearts.filter(c => c.alive).length
       this.heal(numHearts * 4)
       this.bow.update()
     }
@@ -64,9 +64,10 @@ export default class Player extends Entity {
   }
 
   newHeart(type) {
-    game.heartManager.getHeart(type)
+    this.game.heartManager.getHeart(type)
     this.nextHeart++
-    if (this.nextHeart>game.heartManager.maxHearts-1) {
+    this.game.updateMulti(1)
+    if (this.nextHeart>this.game.heartManager.maxHearts-1) {
       this.nextHeart = 0
     }
     this.bow.update()
@@ -76,7 +77,7 @@ export default class Player extends Entity {
     if (this.invulnerable) return
 
     super.damage(damage)
-    game.juicy.shake(20,100)
+    this.game.juicy.shake(20,100)
     this.triggerInvulnerablity()
     let soulFrame = Math.ceil(this.health/(this.maxHealth/15))
     this.soul.animations.frame = soulFrame

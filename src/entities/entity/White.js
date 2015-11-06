@@ -1,8 +1,8 @@
 import Enemy from './Enemy'
 
 export default class White extends Enemy {
-  constructor() {
-    super(200, 200, 'skeleton')
+  constructor(game) {
+    super(game, 200, 200, 'skeleton')
 
     this.heartType = 0
     this.numJumps = 1

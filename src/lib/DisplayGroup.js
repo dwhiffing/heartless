@@ -1,11 +1,13 @@
 
-// Extends Phaser.Group.  
+// Extends Phaser.Group.
 // This type of group is used to display multiple subgroups to be z-sorted
 // Eg. create a group for the enemies, the bullets, and the player individually
 // then insert them all into a sort group and sort based on anything
-var DisplayGroup = function() {
+var DisplayGroup = function(game, name='DisplayGroup', entries=[]) {
   Phaser.Group.call(this, game)
   this.drawCache = [];
+  this.name = name
+  entries.forEach(e => this.add(e))
 }
 
 DisplayGroup.prototype = Object.create(Phaser.Group.prototype)
@@ -14,14 +16,14 @@ DisplayGroup.prototype.constructor = DisplayGroup;
 // this method overrides PIXI.DisplayObjectContainer._renderWebGL
 // only commented lines were changed
 DisplayGroup.prototype._renderWebGL = function(renderSession) {
-  
+
   if (!this.visible || this.alpha <= 0) return;
-  
+
   if (this._cacheAsBitmap) {
     this._renderCachedSprite(renderSession);
     return;
   }
-  
+
   if (this._mask || this._filters) {
     if (this._filters) {
       renderSession.spriteBatch.flush();
@@ -43,7 +45,7 @@ DisplayGroup.prototype._renderWebGL = function(renderSession) {
   }
   else {
     for(i=0,j=this.drawCache.length; i<j; i++) {
-      // this.children[i]._renderWebGL(renderSession);      
+      // this.children[i]._renderWebGL(renderSession);
       this.drawCache[i]._renderWebGL(renderSession);
     }
   }
@@ -52,9 +54,9 @@ DisplayGroup.prototype._renderWebGL = function(renderSession) {
 // this method overrides PIXI.DisplayObjectContainer._renderCanvas
 // only commented lines were changed
 DisplayGroup.prototype._renderCanvas = function(renderSession) {
-  
+
   if (this.visible === false || this.alpha === 0) return;
-  
+
   if (this._cacheAsBitmap) {
     this._renderCachedSprite(renderSession);
     return;
@@ -82,9 +84,9 @@ DisplayGroup.prototype.addChildAt = function (child, index) {
 
 // this method overrides Phaser.Group.sort, only commented lines were changed
 DisplayGroup.prototype.sort = function (key, order) {
-  
+
   if (this.children.length < 2) return;
-  
+
   if (typeof key === 'undefined') { key = 'z'; }
   if (typeof order === 'undefined') { order = Phaser.Group.SORT_ASCENDING; }
 

@@ -2,7 +2,7 @@ import helpers from '../../lib/helpers'
 // Entity is an abstract class that enemy and player inherit from
 // its purpose is to reduce duplication between enemy/player
 export default class Entity extends Phaser.Sprite {
-  constructor(x, y, key, hasShadow) {
+  constructor(game, x, y, key, hasShadow) {
     super(game, x, y, key)
     this.name = key
 
@@ -102,7 +102,7 @@ export default class Entity extends Phaser.Sprite {
     if (amount <= 0) return
     super.heal(amount)
     this.tint = 0x00ff00
-    helpers.delay(500, () => this.tint = 0xFFFFFF)
+    this.game.time.events.add(500, () => this.tint = 0xFFFFFF)
   }
 
   kill() {

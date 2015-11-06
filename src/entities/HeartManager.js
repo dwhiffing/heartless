@@ -1,7 +1,8 @@
 import Heart from './Heart'
 
-export default class HeartManager {
-  constructor() {
+export default class HeartGroup {
+  constructor(game) {
+    this.game = game
     game.heartTrails = game.add.group()
     game.hearts = game.add.group()
     game.hearts.name = "heartGroup"
@@ -11,11 +12,11 @@ export default class HeartManager {
     game.hearts.createMultiple(this.maxHearts)
   }
   getHeart(type) {
-    let heart = game.hearts.getFirstDead() || game.hearts.filter(h => h.order == game.player.nextHeart).list[0]
+    let heart = this.game.hearts.getFirstDead() || this.game.hearts.filter(h => h.order == this.game.player.nextHeart).list[0]
     if (heart) {
-      heart.order = game.player.nextHeart
+      heart.order = this.game.player.nextHeart
       heart.reset(type)
-      let hearts = game.hearts.children.filter(c => c.alive)
+      let hearts = this.game.hearts.children.filter(c => c.alive)
       hearts.forEach((heart, index, hearts) => {
         heart.mAngle = (index*(360/hearts.length))/57
       })

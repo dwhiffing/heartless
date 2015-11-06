@@ -12,7 +12,7 @@
     * Blue: spreads to cover entire arena
 
 ### Secondary hearts
-  Having an equal amount of two primaries with none of the other causes secondary effects: 
+  Having an equal amount of two primaries with none of the other causes secondary effects:
     * Orange: laser
     * Green: splitter
     * Purple: poison cloud
@@ -51,3 +51,7 @@
 
   - Moon phases for each colour:
      - spawn rates, player damage, amount of damage player takes per shot
+
+  - Need to bring sfx back
+  - Need more interesting spawning, maybe way to specify specifics waves
+  - Need to fix scope polluting

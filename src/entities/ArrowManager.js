@@ -6,15 +6,16 @@ import Yellow from './entity/Yellow.js'
 import Blue from './entity/Blue.js'
 import helpers from '../lib/helpers'
 
-export default class Spawner {
-  constructor() {
-    game.enemyGroup = game.add.group()
+export default class EnemyManager {
+  constructor(game) {
+    this.game = game
+    game.enemies = game.add.group()
     types = [White, Red, Yellow, Blue]
     this.rates = [1,1,1,1]
     this._rates = [1,1,1,1]
     types.forEach(type => {
       for (var i = 0; i < 25; i++) {
-        game.enemyGroup.add(new type)
+        game.enemies.add(new type)
       }
     })
     game.time.events.loop(500, this.release, this)
@@ -37,10 +38,10 @@ export default class Spawner {
     if (this.rates[type] > 10) {
       this.rates[type] = 10
     }
-    game.ui[helpers.typeToSting(type)+'RateText'].text = this.rates[type]
+    this.wgame.ui[helpers.typeToSting(type)+'RateText'].text = this.rates[type]
   }
   spawn(type) {
-    let enemy = game.enemyGroup.filter(enemy => {
+    let enemy = this.wgame.enemies.filter(enemy => {
       return !enemy.alive && enemy.heartType === type
     }).list[0]
     if (enemy) {

@@ -1,11 +1,13 @@
 class BlastGroup extends Phaser.Group {
 
-  constructor() {
+  constructor(game) {
     super(game)
+    this.game = game
+    this.name = "BlastGroup"
   }
 
   create() {
-    var blast = game.add.sprite(0, 0, 'explosion');
+    var blast = this.game.add.sprite(0, 0, 'explosion');
     blast.anchor.setTo(0.5, 0.5);
     this.add(blast);
 
@@ -21,7 +23,7 @@ class BlastGroup extends Phaser.Group {
     blast.tint = tint
     blast.scale.setTo(scale, scale)
 
-    blast.angle = game.rnd.integerInRange(0, 360);
+    blast.angle = this.game.rnd.integerInRange(0, 360);
     blast.animations.play('boom');
 
     return blast;

@@ -6,6 +6,7 @@ export default class Heart extends Phaser.Sprite{
     this.anchor.set(0.5, 0.5)
     game.physics.enable(this)
     this.body.enable = false
+    this.game = game
     this.dist = 35
   	this.kill()
   }
@@ -13,8 +14,8 @@ export default class Heart extends Phaser.Sprite{
   update() {
     if (!this.alive) return
 
-    this.x = game.player.x + 2 + this.dist * Math.cos(this.mAngle)
-    this.y = game.player.y - game.player.height/2 + this.dist * Math.sin(this.mAngle)
+    this.x = this.game.player.x + 2 + this.dist * Math.cos(this.mAngle)
+    this.y = this.game.player.y - this.game.player.height/2 + this.dist * Math.sin(this.mAngle)
     this.mAngle += 0.02
     if (this.mAngle >= 6.316) {
       this.mAngle = 0
@@ -29,8 +30,8 @@ export default class Heart extends Phaser.Sprite{
   }
 
   fly() {
-  	var dx = (game.player.x) - (this.x)
-  	var dy = (game.player.y-40) - (this.y)
+  	var dx = (this.game.player.x) - (this.x)
+  	var dy = (this.game.player.y-40) - (this.y)
   	var a = Math.atan2(dy, dx)
     this.body.enable = true
     this.body.velocity.setTo(Math.cos(a) * 250, Math.sin(a) * 250)
@@ -39,16 +40,16 @@ export default class Heart extends Phaser.Sprite{
   }
 
   createTrail() {
-    if (!game.enableHeartTrails) return
+    if (!this.game.enableHeartTrails) return
     if (!this.trail) {
-      this.trail = game.juicy.createTrail(1, 0xffffaa)
+      this.trail = this.game.juicy.createTrail(1, 0xffffaa)
       this.trail.trailScaling = true
       this.trail.alpha = 0.35
       this.trail.trailWidth = 5
-      game.heartTrails.add(this.trail)
+      this.game.heartTrails.add(this.trail)
     }
     this.trail.trailLength = 0
-    game.time.events.add(200, function(){
+    this.game.time.events.add(200, function(){
       this.trail.trailLength = 10
     }, this)
     this.trail.target = this
@@ -62,7 +63,7 @@ export default class Heart extends Phaser.Sprite{
 
   kill() {
     if (this.trail) {
-      game.time.events.add(200, () => this.trail.target = null)
+      this.game.time.events.add(200, () => this.trail.target = null)
     }
     this.mAngle = 0
     this.body.enable = false
