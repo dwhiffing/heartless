@@ -1,13 +1,13 @@
-import Player from '../entities/Player'
-import EnemyManager from '../entities/EnemyManager'
-import HeartGroup from '../entities/HeartGroup'
-import InputManager from '../entities/InputManager'
-import Background from '../entities/Background'
-import Interface from '../entities/Interface'
-import BlastGroup from '../entities/BlastGroup'
-import PointTextGroup from '../entities/PointTextGroup'
+import Player from '../Player'
+import EnemyManager from '../EnemyManager'
+import HeartGroup from '../HeartGroup'
+import InputManager from '../InputManager'
+import Background from '../Background'
+import Interface from '../Interface'
+import BlastGroup from '../BlastGroup'
+import PointTextGroup from '../PointTextGroup'
 import DisplayGroup from '../lib/DisplayGroup'
-import helpers from '../lib/helpers'
+import helpers from'../helpers'
 
 export default {
   create(game) {

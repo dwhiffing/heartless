@@ -1,7 +1,7 @@
 var typebunchSize, randT, types
 
 import Enemy from './Enemy.js'
-import helpers from '../lib/helpers'
+import helpers from'./helpers'
 
 export default class EnemyGroup {
   constructor(game) {

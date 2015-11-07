@@ -1,6 +1,6 @@
 // a bow manages an entities ability to shoot arrows
 // and what stats those arrows have
-import helpers from '../lib/helpers'
+import helpers from'./helpers'
 import Arrow from './Arrow'
 import constants from './Constants'
 

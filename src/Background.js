@@ -1,4 +1,4 @@
-import helpers from '../lib/helpers'
+import helpers from'./helpers'
 
 export default class Background {
   constructor(game) {

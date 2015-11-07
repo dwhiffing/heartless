@@ -7,7 +7,7 @@ var gutil = require('gulp-util');
 var buffer = require('vinyl-buffer');
 var watchify = require('watchify');
 
-var bundler = watchify(browserify('./src/game.js', watchify.args));
+var bundler = watchify(browserify('./src/index.js', watchify.args));
 bundler.transform('babelify');
 
 gulp.task('js', bundle); // so you can run `gulp js` to build the file

@@ -1,5 +1,5 @@
 import Entity from './Entity'
-import helpers from '../lib/helpers'
+import helpers from'./helpers'
 import constants from './Constants'
 
 export default class Enemy extends Entity {

@@ -1,4 +1,4 @@
-import helpers from '../lib/helpers'
+import helpers from'./helpers'
 // Entity is an abstract class that enemy and player inherit from
 // its purpose is to reduce duplication between enemy/player
 export default class Entity extends Phaser.Sprite {
