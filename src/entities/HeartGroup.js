@@ -1,17 +1,24 @@
 import Heart from './Heart'
 
-export default class HeartGroup {
+export default class HeartGroup extends Phaser.Group {
+
   constructor(game) {
+    super(game)
     this.game = game
-    game.heartTrails = game.add.group()
-    game.hearts = game.add.group()
-    game.hearts.name = "heartGroup"
-    game.heartTrails.name = "heartTrails"
-    game.hearts.classType = Heart
+    this.name = "HeartGroup"
+    this.classType = Heart
     this.maxHearts = 16
-    game.hearts.createMultiple(this.maxHearts)
+    this.createMultiple(this.maxHearts)
+
+    game.heartTrails = game.add.group()
+    game.heartTrails.name = "heartTrails"
   }
-  getHeart(type) {
+
+  countLiving() {
+    return this.filter(c => c.alive).list.length
+  }
+
+  get(type) {
     let heart = this.game.hearts.getFirstDead() || this.game.hearts.filter(h => h.order == this.game.player.nextHeart).list[0]
     if (heart) {
       heart.order = this.game.player.nextHeart
@@ -21,5 +28,7 @@ export default class HeartGroup {
         heart.mAngle = (index*(360/hearts.length))/57
       })
     }
+
+    return heart
   }
 }

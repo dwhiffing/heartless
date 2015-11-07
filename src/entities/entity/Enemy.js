@@ -37,7 +37,7 @@ export default class Enemy extends Entity {
 				this.game.player.newHeart(this.heartType)
 			}
 			this.game.blasts.get(this.x, this.y-20, 0.2, helpers.typeToHex(this.heartType))
-			this.game.updateScore(this.score)
+			this.game.updateScore(this.score, this.x, this.y-100)
 		}
 		super.kill()
 	}

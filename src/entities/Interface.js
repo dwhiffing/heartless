@@ -5,13 +5,17 @@ export default class Interface {
     this.game = game
     game.score = 0
     game.multi = 1
-    game.bestMulti = 1
+    game.highMulti = 1
     this.createGUI()
     this.addDebug()
 
-    game.updateScore = (change) => {
-      game.score += change * game.multi
+    game.updateScore = (change=0, sourceX, sourceY) => {
+      let scoreChange = change * game.multi
+      let x = sourceX ? sourceX : game.player.x
+      let y = sourceY ? sourceY : game.player.y
+      game.score += scoreChange
       game.ui.scoreText.text = game.score
+      this.game.pointTexts.get(x, y, scoreChange.toString())
     }
 
     game.updateMulti = (change) => {
@@ -22,7 +26,7 @@ export default class Interface {
       }
       game.ui.multiText.text = game.multi
       if (game.multi > game.highMulti) {
-
+        game.highMulti = game.multi
         game.ui.highMultiText.text = game.highMulti
       }
     }
@@ -46,7 +50,7 @@ export default class Interface {
     }, -80, 10, 40, 0)
     this.createDebugList({
       highMultiLabel: 'best:',
-      highMulti: '0'
+      highMulti: '1'
     }, -80, 30, 40, 0)
 
     let startX = this.game.width/6
@@ -56,13 +60,13 @@ export default class Interface {
     let heartsText = helpers.addText(this.game, startX, 20,'hearts:', opts)
     this.game.textGroup.add(ratesText)
     this.game.textGroup.add(heartsText)
-    let rateStrings = {
+    let ratestrings = {
       whiteRate: this.game.enemyManager.rates[0],
       redRate: this.game.enemyManager.rates[1],
       yellowRate: this.game.enemyManager.rates[2],
       blueRate: this.game.enemyManager.rates[3]
     }
-    this.createDebugList(rateStrings, startX+35, 10, 20, 0, opts)
+    this.createDebugList(ratestrings, startX+35, 10, 20, 0, opts)
 
     let heartStrings = {
       whiteHeart: '0',

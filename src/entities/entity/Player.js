@@ -40,10 +40,11 @@ export default class Player extends Entity {
 
   jump(enemy) {
     if (!this.jumping) {
-      this.game.hearts.callAllExists("fly", true)
-      this.bow.update()
-      let numHearts = this.game.hearts.filter(c => c.alive).length
+      let numHearts = this.game.hearts.countLiving()
       this.heal(numHearts * 4)
+      this.game.hearts.callAllExists("fly", true)
+      this.game.updateMulti(0)
+      this.bow.update()
       this.bow.update()
     }
     if (enemy || !this.jumping) {
@@ -64,10 +65,10 @@ export default class Player extends Entity {
   }
 
   newHeart(type) {
-    this.game.heartManager.getHeart(type)
+    this.game.hearts.get(type)
     this.nextHeart++
     this.game.updateMulti(1)
-    if (this.nextHeart>this.game.heartManager.maxHearts-1) {
+    if (this.nextHeart>this.game.hearts.maxHearts-1) {
       this.nextHeart = 0
     }
     this.bow.update()

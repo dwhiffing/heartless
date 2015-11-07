@@ -1,10 +1,11 @@
 import Player from '../entities/entity/Player'
 import EnemyManager from '../entities/EnemyManager'
-import HeartManager from '../entities/HeartManager'
+import HeartGroup from '../entities/HeartGroup'
 import InputManager from '../entities/InputManager'
 import Background from '../entities/Background'
 import Interface from '../entities/Interface'
 import BlastGroup from '../entities/BlastGroup'
+import PointTextGroup from '../entities/PointTextGroup'
 import DisplayGroup from '../lib/DisplayGroup'
 import helpers from '../lib/helpers'
 
@@ -20,8 +21,11 @@ export default {
     game.blasts = new BlastGroup(game)
     game.enemyManager = new EnemyManager(game)
     game.interface = new Interface(game)
-    game.heartManager = new HeartManager(game)
+    game.hearts = new HeartGroup(game)
+    game.heartTrails = game.add.group()
+    game.heartTrails.name = "heartTrails"
     game.player = new Player(game, game.width/2-200, game.width/8)
+    game.pointTexts = new PointTextGroup(game)
 
     game.entityGroup = new DisplayGroup(game, 'entityGroup',[game.enemies, game.player])
 
@@ -31,9 +35,7 @@ export default {
 
   update() {
     this.game.inputManager.update()
-
     this.game.entityGroup.sort('z', Phaser.Group.SORT_ASCENDING)
-
     this.game.physics.arcade.overlap(
       this.game.player, this.game.enemies,
       (p, e) => {p.overlapEntity(e)}, null, this
