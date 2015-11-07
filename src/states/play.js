@@ -1,4 +1,4 @@
-import Player from '../entities/entity/Player'
+import Player from '../entities/Player'
 import EnemyManager from '../entities/EnemyManager'
 import HeartGroup from '../entities/HeartGroup'
 import InputManager from '../entities/InputManager'
@@ -19,12 +19,12 @@ export default {
     game.backgroundManager = new Background(game)
     game.inputManager = new InputManager(game)
     game.blasts = new BlastGroup(game)
-    game.enemyManager = new EnemyManager(game)
     game.interface = new Interface(game)
     game.hearts = new HeartGroup(game)
     game.heartTrails = game.add.group()
     game.heartTrails.name = "heartTrails"
     game.player = new Player(game, game.width/2-200, game.width/8)
+    game.enemyManager = new EnemyManager(game)
     game.pointTexts = new PointTextGroup(game)
 
     game.entityGroup = new DisplayGroup(game, 'entityGroup',[game.enemies, game.player])

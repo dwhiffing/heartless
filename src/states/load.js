@@ -18,10 +18,7 @@ export default {
 
     this.load.spritesheet('player', 'images/player.gif', 32, 40)
 
-    this.load.spritesheet('skeleton', 'images/skeleton.gif', 32, 42)
-    this.load.spritesheet('soldier', 'images/soldier.gif', 32, 42)
-    this.load.spritesheet('helmet', 'images/helmet.gif', 32, 42 )
-    this.load.spritesheet('bee', 'images/bee.gif', 32, 42)
+    this.load.spritesheet('enemy', 'images/enemy.png', 32, 50)
   },
 
   onLoadComplete() {

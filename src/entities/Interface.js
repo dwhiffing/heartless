@@ -61,10 +61,10 @@ export default class Interface {
     this.game.textGroup.add(ratesText)
     this.game.textGroup.add(heartsText)
     let ratestrings = {
-      whiteRate: this.game.enemyManager.rates[0],
-      redRate: this.game.enemyManager.rates[1],
-      yellowRate: this.game.enemyManager.rates[2],
-      blueRate: this.game.enemyManager.rates[3]
+      whiteRate: '1',
+      redRate: '1',
+      yellowRate: '1',
+      blueRate: '1'
     }
     this.createDebugList(ratestrings, startX+35, 10, 20, 0, opts)
 

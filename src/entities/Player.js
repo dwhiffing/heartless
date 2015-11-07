@@ -1,6 +1,6 @@
 import Entity from './Entity'
-import Bow from '../Bow'
-import helpers from '../../lib/helpers'
+import Bow from './Bow'
+import helpers from '../lib/helpers'
 
 export default class Player extends Entity {
   // the Player is defined as a Phaser.Sprite

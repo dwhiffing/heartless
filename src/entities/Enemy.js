@@ -1,16 +1,18 @@
 import Entity from './Entity'
-import helpers from '../../lib/helpers'
+import helpers from '../lib/helpers'
+import constants from './Constants'
 
 export default class Enemy extends Entity {
 	// Enemy is abstract
-	constructor(game, x, y, key) {
-		super(game, -200, -200, key)
+	constructor(game) {
+		super(game, 200, 200, 'enemy')
 		this.score = 100
 		this.name = "Enemy"
-		this.animations.add('skeleton', [0,1,2], 4, true);
-		this.animations.add('soldier', [3,4,5], 4, true);
-		this.animations.add('helmet', [6,7,8], 4, true);
-		this.animations.add('fly', [9,10,11], 4, true);
+		this.stats = constants.enemy
+		this.animations.add("skeleton", [0, 1, 2, 1], 4, true)
+		this.animations.add("soldier", [3, 4, 5, 4], 4, true)
+		this.animations.add("helmet", [6, 7, 8, 7], 4, true)
+		this.animations.add("fly", [9, 10, 11, 10], 4, true)
 		this.kill()
 	}
 
@@ -20,16 +22,36 @@ export default class Enemy extends Entity {
 	    this.kill()
 	  }
 		if (this.body.velocity.x < this.maxSpeed) {
-			this.body.velocity.x += 0.01
+			this.body.velocity.x += 0.05
 		}
 		Entity.prototype.update.call(this)
 	}
 
-	reset() {
-	  super.reset(-30, this.game.rnd.integerInRange(130, 230), this.maxHealth)
-	  this.runSpeed = this.game.rnd.integerInRange(this.minSpeed, this.maxSpeed)
-	  this.body.velocity.x = this.runSpeed
+	reset(x, y, type, color) {
+		let colorName = helpers.typeToHex(color)
+		this.tint = colorName
+		this.heartType = color
+		this.tint = colorName
+		if (typeof type == "number") {
+			type = helpers.typeToEnemy(type)
+		}
+
+
+		this.maxHealth = this.stats[type].maxHealth
+		this.numJumps = this.stats[type].numJumps
+		this.minSpeed = this.stats[type].minSpeed
+		this.maxSpeed = this.stats[type].maxSpeed
+
+		this.runSpeed = this.game.rnd.integerInRange(this.minSpeed, this.maxSpeed)
 		this.jumpDamage = this.health/this.numJumps
+
+		let frameRate = parseInt(this.runSpeed/25, 10)
+		frameRate = Math.max(2, frameRate)
+		this.animations.play(type,frameRate)
+
+		let y = 10 * this.game.rnd.integerInRange(13, 23)
+	  super.reset(-30, y, this.maxHealth)
+		this.body.velocity.x = this.runSpeed
 	}
 
 	kill() {
