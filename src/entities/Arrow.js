@@ -1,69 +1,67 @@
+const frames = ['white','red','yellow','blue','purple','green','orange']
+
 export default class Arrow extends Phaser.Sprite {
-  constructor(game, x, y, key, frame) {
-    super(game, x, y, 'arrow', frame)
+  constructor(game) {
+    super(game, -100, -100, 'arrow', 0)
     this.game = game
-    this.animations.add('white', [0])
-    this.animations.add('red', [1])
-    this.animations.add('yellow', [2])
-    this.animations.add('blue', [3])
-    this.animations.add('purple', [4])
-    this.animations.add('green', [5])
-    this.animations.add('orange', [6])
+    frames.forEach((f, i) => this.animations.add(f, [i]))
     game.physics.enable(this)
+    this.stats = {}
     this.body.allowGravity = false
     this.anchor.setTo(0, 0.5)
   }
 
-  shoot(opts) {
-    var opts = opts || {}, x = opts.x || 0, y = opts.y || 0
-  	this.reset(x, y)
-    this.power = opts.power
+  shoot(opts={}) {
+  	this.reset(opts.x, opts.y)
     this.startX = this.x
-    this.anchor.setTo(0, 0.5)
-    this.range = opts.range + Math.random() * 20
-    this.radius = opts.radius/12
+    this.stats = opts
+
+  	this.health = opts.health
   	this.animations.play(opts.type)
-    this.push = opts.push
-    this.scale.setTo(opts.sizeX, opts.sizeY)
-  	this.health = opts.pierce
-    this.slow = opts.slow
-  	this.body.velocity.x = -opts.speed + Math.floor(
-      Math.random() * (opts.spreadX - ( -opts.spreadX) + 1) + ( -opts.spreadX)
-    )
-  	this.body.velocity.y = Math.floor(
-      Math.random() * (opts.spreadY - ( -opts.spreadY) + 1) + ( -opts.spreadY)
-    )
+    this.scale.setTo(opts.size.x, opts.size.y)
+
+  	this.body.velocity.x = -opts.speed + this.getSpeed(opts.spread.x)
+  	this.body.velocity.y = this.getSpeed(opts.spread.y)
+
     opts.callback(this)
   	this.lastEnemy = null
   }
 
+  getSpeed(spread) {
+    return Math.random() * (spread - (-spread) + 1) + (-spread)
+  }
+
   update() {
-    if (this.x < this.startX - this.range || this.x > this.game.width/2 + 500) {
+    let min = this.startX - this.stats.range + Math.random()*20
+    let max = this.game.width/2 + 500
+    if (this.x < min || this.x > max) {
       this.kill()
     }
   }
 
   kill() {
     if (!this.alive) return
-    if (this.radius > 0) {
-      this.game.blasts.get(this.x, this.y, this.radius)
-      this.getInRangeForDamage().forEach(e => e.damage(this.power))
+    if (this.stats.radius > 0) {
+      this.game.blasts.get(this.x, this.y, this.stats.radius/12)
+      this.getInRangeForDamage().forEach(e => e.damage(this.stats.power))
     }
     super.kill()
   }
 
   getInRangeForDamage() {
-    return this.game.enemies.filter((r) => this.getDist(r) < this.radius*100).list
+    return this.game.enemies.filter((r) => {
+      return this.dist(r) < this.stats.radius*10
+    }).list
   }
 
-  getDist(target) {
+  dist(target) {
     return this.game.math.distance(this.x, this.y, target.x, target.y);
   }
 
   overlapEntity(entity) {
   	if (this.lastEnemy != entity && !entity.jumping) {
   		this.lastEnemy = entity
-      entity.damage(this.power, false, this.slow, this.push)
+      entity.damage(this.stats.power, false, this.stats.slow, this.stats.push)
   		this.damage(1)
   	}
   }

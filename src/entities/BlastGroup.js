@@ -1,4 +1,4 @@
-class BlastGroup extends Phaser.Group {
+export default class BlastGroup extends Phaser.Group {
 
   constructor(game) {
     super(game)
@@ -29,5 +29,3 @@ class BlastGroup extends Phaser.Group {
     return blast;
   }
 }
-
-export default BlastGroup;
