@@ -39,41 +39,43 @@ export default {
       rate: [10, 3000],
       push: [0, 100],
       range: [5, 2000],
-      pierce: [1, 100]
+      pierce: [1, 100],
+      spreadX: [0, 50],
+      spreadY: [0, 50],
+      sizeX: [0.3, 1000],
+      sizeY: [0.3, 1000],
     },
     base: {
     	type: 'white', // color of arrow
-    	size: 1.5, // the scale of the bullet
-    	power: 1, // the amount of damage the bullets do
+    	sizeX: 1.5, // the scale of the arrow
+    	sizeY: 1.5, // the scale of the arrow
+    	power: 1, // the amount of damage the arrows do
     	radius: 1, // the size of the explosion the arrow makes
-    	speed: 200, // the speed that the bullets move
+    	speed: 200, // the speed that the arrows move
     	rate: 1000, // the amount milliseconds between firing
     	slow: 15, // the amount a hit devides the enemy speed
-    	shell: 1, // the amount of bullets fired per shot
-    	range: 200, // how far bullets will travel
-    	pierce: 1, // the amount of enemies a bullet can hit before dying
+    	shell: 1, // the amount of arrows fired per shot
+    	range: 200, // how far arrows will travel
+    	pierce: 1, // the amount of enemies an arrow can hit before dying
     	push: 20,
-    	spread: {
-    		x:20,
-    		y:20
-    	}, // the amount that the bullets deviate up/down
+    	spreadX: 20,  // the amount that the bullets deviate up/down
+    	spreadY: 20, // the amount that the bullets deviate up/down
     	size: 1,
     	callback: () => {}
     },
     red: (r) => {
       return {
       	type: 'red',
-      	size: 0.28 * r,
+      	sizeX: 0.28 * r,
+      	sizeY: 0.28 * r,
       	power: 2 * r,
       	radius: 0.5 * r,
       	speed: -5 * r,
       	rate: 90 * r,
       	push: 10 * r,
       	range: 4 * r,
-      	spread: {
-      		x: 3 * r,
-      		y: 0.2 * r
-      	},
+      	spreadX: 3 * r,
+      	spreadY: 0.2 * r,
       	pierce: Math.floor(2 * r)+1
       }
     },
@@ -81,14 +83,12 @@ export default {
       return {
     		type: 'yellow',
     		speed: 12 * y,
-    		rate: 50 + Math.pow(16 - y, 2),
+    		abs_rate: 50 + Math.pow(16 - y, 2),
     		radius: 0.02 * y,
     		range: -7 * y,
     		slow: 1,
-    		spread: {
-    			x: 5 * y,
-    			y: 0.1 * y
-    	   }
+    		spreadX: 5 * y,
+    		spreadY: 0.1 * y,
       }
     },
     blue: (b) => {
@@ -101,10 +101,8 @@ export default {
     		shell: Math.ceil(1.2 * b),
     		rate: 15 * b,
     		range: -2 * b,
-    		spread: {
-    			x: 3 * b,
-    			y: 10 * b
-    		},
+    		spreadX: 3 * b,
+    		spreadY: 10 * b,
     		pierce: 2 * b
       }
   	},
@@ -119,10 +117,8 @@ export default {
     		slow: 1,
     		rate: r*4 - y*100 + b*4,
     		range: r*3 - y*10 - b*10,
-    		spread: {
-    			x: r*2 + b*2,
-    			y: r*2 + b*1.5
-    		},
+    		spreadX: r*2 + b*2,
+    		spreadY: r*2 + b*1.5,
   		  pierce: r*2 - b*2
       }
   	},
@@ -131,7 +127,7 @@ export default {
   	    type: 'purple'
       }
   	},
-  	green: (b, y) => {
+  	green: (y, b) => {
       return {
   	    type: 'green'
       }
@@ -143,16 +139,12 @@ export default {
         radius: 0,
         slow: 1 + r*.2,
         speed: 200,
-        rate: 50,
-        spread: {
-         x: 0,
-         y: 0
-        },
-        size: {
-         x: 60,
-         y: 1 + r/3
-        },
-        range: 0,
+        abs_rate: 50,
+        spreadX: 0,
+        spreadY: 0,
+        sizeX: 60,
+        sizeY: 1 + r/3,
+        range: 20,
         pierce: 100,
         callback: (bullet) => {
          bullet.body.width = 1000

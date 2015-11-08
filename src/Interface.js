@@ -9,6 +9,14 @@ export default class Interface {
     this.createGUI()
     this.addDebug()
 
+    this.title = game.add.sprite(this.game.width/4.35, 30, 'title')
+    this.title.alpha = 0
+    this.title.anchor.setTo(0.5, 0.5)
+    this.title.scale.setTo(0.75, 0.75)
+
+    this.game.muteButton = game.add.button(this.game.width/2-20, this.game.height/2-25, 'mute', this.mute)
+    this.game.muteButton.frame = 1
+
     game.updateScore = (change=0, sourceX, sourceY) => {
       let scoreChange = change * game.multi
       let x = sourceX ? sourceX : game.player.x
@@ -30,6 +38,11 @@ export default class Interface {
         game.ui.highMultiText.text = game.highMulti
       }
     }
+  }
+
+  mute() {
+    this.game.sound.mute = !this.game.sound.mute
+    this.game.muteButton.frame = !!this.game.sound.mute ? 0 : 1
   }
 
   createGUI() {
@@ -87,6 +100,17 @@ export default class Interface {
       )
       this.game.textGroup.add(this.game.ui[key+'Text'])
     })
+  }
+
+  showTitle() {
+    if (this.game.titleShown) return
+    this.game.titleShown = true
+
+    let tweenA = this.game.add.tween(this.title).to({alpha: 1}, 4000, 'Linear')
+    let tweenB = this.game.add.tween(this.title) .to({alpha: 0}, 2000, 'Linear')
+    tweenA.chain(tweenB)
+    tweenA.start()
+    this.game.music.play()
   }
 
   addDebug() {

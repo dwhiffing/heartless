@@ -27,6 +27,14 @@ export default class Player extends Entity {
     this.animations.add('still', [0], 2, true)
     this.animations.play('walk')
 
+    this.healSound = game.add.audio('heal')
+    this.jumpSound = game.add.audio('jump')
+    this.hurtSound = this.game.add.audio('hurt');
+
+    [1,2,3,4,5,6,7].forEach(n => {
+      this['hit'+n+'Sound'] = this.game.add.audio('hit'+n)
+    })
+
     // create a Bow to track player weapon stats
     this.bow = new Bow(this)
     this.multi = 1
@@ -41,15 +49,26 @@ export default class Player extends Entity {
   jump(enemy) {
     if (!this.jumping) {
       let numHearts = this.game.hearts.countLiving()
-      this.heal(numHearts * 4)
-      this.game.hearts.callAllExists("fly", true)
-      this.game.updateMulti(0)
-      this.bow.update()
-      this.bow.update()
-    }
-    if (enemy || !this.jumping) {
+      if (numHearts == 0) {
+        this.jumpSound.play()
+      } else {
+        this.heal(numHearts * 4)
+        this.game.hearts.callAllExists("fly", true)
+        this.game.updateMulti(0)
+        this.bow.update()
+      }
       super.jump()
     }
+    if (enemy) {
+      let number = this.game.multi < 8 ? this.game.multi : 7
+      this['hit'+number+'Sound'].play()
+      super.jump()
+    }
+  }
+
+  heal(amount) {
+    this.healSound.play()
+    super.heal(amount)
   }
 
   overlapEntity(entity) { //landed on enemy
@@ -79,6 +98,7 @@ export default class Player extends Entity {
 
     super.damage(damage)
     this.game.juicy.shake(20,100)
+    this.hurtSound.play()
     this.triggerInvulnerablity()
     let soulFrame = Math.ceil(this.health/(this.maxHealth/15))
     this.soul.animations.frame = soulFrame

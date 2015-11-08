@@ -17,7 +17,7 @@ export default class Enemy extends Entity {
 	}
 
 	update() {
-	  this.z = this.y
+	  this.z = this.y+this.x
 		if(this.x > this.game.width/2+50) {
 	    this.kill()
 	  }
@@ -47,7 +47,7 @@ export default class Enemy extends Entity {
 		frameRate = Math.max(2, frameRate)
 		this.animations.play(type,frameRate)
 
-		let y = 10 * this.game.rnd.integerInRange(13, 23)
+		let y = 15 * this.game.rnd.integerInRange(8, 15)
 	  super.reset(-30, y, this.maxHealth)
 		this.jumpDamage = this.health/this.numJumps
 		this.body.velocity.x = this.runSpeed
@@ -59,6 +59,11 @@ export default class Enemy extends Entity {
 				this.jumpedOn = false
 				this.game.player.newHeart(this.heartType)
 			}
+
+			if (!this.game.titleShown && false) {
+				this.game.interface.showTitle()
+			}
+
 			this.game.blasts.get(this.x, this.y-20, 0.2, helpers.typeToHex(this.heartType))
 			this.game.updateScore(this.score, this.x, this.y-100)
 		}

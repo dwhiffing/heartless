@@ -9,6 +9,9 @@ export default class Arrow extends Phaser.Sprite {
     this.stats = {}
     this.body.allowGravity = false
     this.anchor.setTo(0, 0.5)
+    this.hitSound = this.game.add.audio('hurt3')
+    this.missSound = this.game.add.audio('heart')
+    this.missSound.volume = 0.1
   }
 
   shoot(opts={}) {
@@ -18,10 +21,10 @@ export default class Arrow extends Phaser.Sprite {
 
   	this.health = opts.health
   	this.animations.play(opts.type)
-    this.scale.setTo(opts.size.x, opts.size.y)
+    this.scale.setTo(opts.sizeX, opts.sizeY)
 
-  	this.body.velocity.x = -opts.speed + this.getSpeed(opts.spread.x)
-  	this.body.velocity.y = this.getSpeed(opts.spread.y)
+  	this.body.velocity.x = -opts.speed + this.getSpeed(opts.spreadX)
+  	this.body.velocity.y = this.getSpeed(opts.spreadY)
 
     opts.callback(this)
   	this.lastEnemy = null
@@ -35,13 +38,18 @@ export default class Arrow extends Phaser.Sprite {
     let min = this.startX - this.stats.range + Math.random()*20
     let max = this.game.width/2 + 500
     if (this.x < min || this.x > max) {
-      this.kill()
+      this.kill(true)
     }
   }
 
-  kill() {
+  kill(miss) {
     if (!this.alive) return
     if (this.stats.radius > 0) {
+      if (miss) {
+        this.missSound.play()
+      } else {
+        this.hitSound.play()
+      }
       this.game.blasts.get(this.x, this.y, this.stats.radius/12)
       this.getInRangeForDamage().forEach(e => e.damage(this.stats.power))
     }

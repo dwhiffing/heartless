@@ -11,6 +11,7 @@ export default class Bow {
 		this.game = parent.game
 	  this.event = this.game.time.events.loop(Phaser.Timer.SECOND, this.parent.shoot, this.parent);
 		this.data = constants.bow
+		this.shootSound = this.game.add.audio("shoot")
 
 		this.game.arrows = this.game.add.group()
     this.game.arrows.name = "arrows"
@@ -32,7 +33,7 @@ export default class Bow {
 		this.game.ui.yellowHeartText.text = y
 		this.game.ui.blueHeartText.text = b
 
-		this.stats = this.data.base
+		this.stats = Object.assign({}, this.data.base)
 		let newStats = {}
 
 		// first check if hearts are pure, then set up according to proportions
@@ -63,28 +64,26 @@ export default class Bow {
 		}
 
 		Object.keys(newStats).forEach((n) => {
-			if (typeof this.stats[n] !== 'number') {
-				this.stats[n] = newStats[n]
+			n = n.replace('abs_', '')
+			let abs = false
+			if (newStats['abs_'+n]) {
+				abs = true
+			}
+			console.log(n, abs)
+			let things = newStats['abs_'+n] ? newStats['abs_'+n] : newStats[n]
+			if (typeof this.stats[n] !== 'number' || abs) {
+				this.stats[n] = things
 			} else {
-				this.stats[n] = this.data.base[n] + newStats[n]
+				this.stats[n] = this.data.base[n] + things
 			}
 		}, {})
 
-		this.stats.size = {
-			x: this.stats.size.x || Math.clamp(this.stats.size, 1, 5),
-			y: this.stats.size.y || Math.clamp(this.stats.size, 1, 5)
-		}
-		this.stats.spread = {
-			x: Math.clamp(this.stats.spread.x, 0, 50),
-			y: Math.clamp(this.stats.spread.y, 0, 50)
-		}
-
 		this.event.delay = this.stats.rate
-
-		// console.table([this.stats])
+		console.table([this.stats])
 	}
 
 	shoot(x,y) {
+		this.shootSound.play()
 		for (var i = this.stats.shell; i > 0; i--) {
 			var bullet = this.game.arrows.getFirstDead()
 			if (bullet) {

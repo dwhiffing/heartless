@@ -29,6 +29,10 @@ export default {
 
     game.entityGroup = new DisplayGroup(game, 'entityGroup',[game.enemies, game.player])
 
+    game.interface.mute()
+
+    game.music = game.add.audio("chippedLataren")
+
     // game.enableHeartTrails = true
     game.debugBody = false
   },
