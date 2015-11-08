@@ -126,11 +126,15 @@ export default {
   		  pierce: r*2 - b*2
       }
   	},
-  	purple: {
-  	  type: 'purple'
+  	purple: (r, b) => {
+      return {
+  	    type: 'purple'
+      }
   	},
-  	green: {
-  	  type: 'green'
+  	green: (b, y) => {
+      return {
+  	    type: 'green'
+      }
   	},
   	orange: (r, y) => {
       return {

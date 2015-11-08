@@ -34,6 +34,7 @@ export default {
   },
 
   update() {
+    this.game.backgroundManager.update()
     this.game.inputManager.update()
     this.game.entityGroup.sort('z', Phaser.Group.SORT_ASCENDING)
     this.game.physics.arcade.overlap(

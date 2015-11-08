@@ -7,7 +7,8 @@ export default {
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this)
 
     this.load.image('ground', 'images/ground.gif')
-    this.load.image('sky', 'images/sky.gif')
+    this.load.image('sky', 'images/sky.png')
+    this.load.image('moon', 'images/moon.png')
     this.load.image('title', 'images/title.png')
 
     this.load.spritesheet('arrow', 'images/arrow.png', 10, 5)

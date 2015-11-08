@@ -36,14 +36,12 @@ export default class Enemy extends Entity {
 			type = helpers.typeToEnemy(type)
 		}
 
-
 		this.maxHealth = this.stats[type].maxHealth
 		this.numJumps = this.stats[type].numJumps
 		this.minSpeed = this.stats[type].minSpeed
 		this.maxSpeed = this.stats[type].maxSpeed
 
 		this.runSpeed = this.game.rnd.integerInRange(this.minSpeed, this.maxSpeed)
-		this.jumpDamage = this.health/this.numJumps
 
 		let frameRate = parseInt(this.runSpeed/25, 10)
 		frameRate = Math.max(2, frameRate)
@@ -51,6 +49,7 @@ export default class Enemy extends Entity {
 
 		let y = 10 * this.game.rnd.integerInRange(13, 23)
 	  super.reset(-30, y, this.maxHealth)
+		this.jumpDamage = this.health/this.numJumps
 		this.body.velocity.x = this.runSpeed
 	}
 

@@ -37,20 +37,25 @@ export default class Bow {
 
 		// first check if hearts are pure, then set up according to proportions
 		if (w == 0 && r > 0 && y == 0 && b == 0) {
+			// pure red
 			newStats = this.data.red(r)
 		} else if (w == 0 && r == 0 && y > 0 && b == 0) {
+			// pure yellow
 			newStats = this.data.yellow(y)
 		} else if (w == 0 && r == 0 && y == 0 && b > 0) {
+			// pure blue
 			newStats = this.data.blue(b)
 		} else if (w || r || y || b) {
+			// mutt
 			newStats = this.data.white(r,y,b)
 		}
 		if (w == 0 && y == 0 && r > 0 && b > 0 && r == b) {
-			newStats = this.data.purple
+			// pure purple
+			newStats = this.data.purple(r,b)
 		}
 		if (w == 0 && r == 0 && y > 0 && b > 0 && y == b) {
 			// green - split / double hearts
-			newStats = this.data.green
+			newStats = this.data.green(y,b)
 		}
 		if (w == 0 && b == 0 && r > 0 && y > 0 && r == y) {
 			// orange - laser / faster

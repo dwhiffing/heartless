@@ -11,7 +11,7 @@ export default class BlastGroup extends Phaser.Group {
     blast.anchor.setTo(0.5, 0.5);
     this.add(blast);
 
-    var animation = blast.animations.add('boom', [0,1,2,3], 60, false);
+    var animation = blast.animations.add('boom', [0,1,2,3], 25, false);
     animation.killOnComplete = true;
 
     return blast;
