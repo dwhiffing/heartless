@@ -1,4 +1,4 @@
-import helpers from'./helpers'
+import constants from'./Constants'
 
 export default class Heart extends Phaser.Sprite{
   constructor(game, opts) {
@@ -25,7 +25,7 @@ export default class Heart extends Phaser.Sprite{
   reset(type) {
   	super.reset(300, 300)
   	this.type = type
-    this.tint = helpers.typeToHex(type)
+    this.tint = constants.enemy.hex[type]
     this.createTrail()
   }
 
@@ -53,7 +53,7 @@ export default class Heart extends Phaser.Sprite{
       this.trail.trailLength = 10
     }, this)
     this.trail.target = this
-    this.trail.trailColor = helpers.typeToHex(this.type)
+    this.trail.trailColor = constants.enemy.hex[this.type]
     var self = this
     setInterval(() => {
       self.trail.addSegment(self.x, self.y)

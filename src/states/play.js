@@ -21,8 +21,6 @@ export default {
     game.blasts = new BlastGroup(game)
     game.interface = new Interface(game)
     game.hearts = new HeartGroup(game)
-    game.heartTrails = game.add.group()
-    game.heartTrails.name = "heartTrails"
     game.player = new Player(game, game.width/2-200, game.width/8)
     game.enemyManager = new EnemyManager(game)
     game.pointTexts = new PointTextGroup(game)

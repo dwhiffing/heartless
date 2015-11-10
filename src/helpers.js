@@ -12,21 +12,6 @@ export default {
     }
   },
 
-  typeToSting(type) {
-    let words = ['white', 'red', 'yellow', 'blue', 'purple', 'green', 'orange']
-    return words[type]
-  },
-
-  typeToEnemy(type) {
-    let words = ['skeleton', 'soldier', 'helmet', 'fly']
-    return words[type]
-  },
-
-  typeToHex(type) {
-    let words = [0xffffff, 0xff0000, 0xffff00, 0x0000ff, 0xff00ff, 0x00ff00, 0xffaa00]
-    return words[type]
-  },
-
   flickerSprite(sprite, time=1500, flicker, callback) {
     flicker = flicker || function() {
       this.alpha = (this.alpha === 0.5) ? 0.8 : 0.5

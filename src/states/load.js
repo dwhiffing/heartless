@@ -3,7 +3,7 @@ import debugPlugin from 'phaser-debug'
 export default {
   preload() {
     this.game.juicy = this.game.plugins.add(Juicy)
-    this.game.add.plugin(Phaser.Plugin.Inspector);
+    // this.game.add.plugin(Phaser.Plugin.Inspector);
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this)
 
     this.load.image('ground', 'images/ground.gif')

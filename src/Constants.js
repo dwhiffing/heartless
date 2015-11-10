@@ -1,5 +1,9 @@
 export default {
   enemy: {
+    colors: ['white', 'red', 'yellow', 'blue', 'purple', 'green', 'orange'],
+    names: ['skeleton', 'soldier', 'helmet', 'fly'],
+    hex: [0xffffff, 0xff0000, 0xffff00, 0x0000ff, 0xff00ff, 0x00ff00, 0xffaa00],
+    css: ["#ffffff", '#ff0000', '#ffff00', '#0000ff', '#ff00ff', '#00ff00', '#ffaa00'],
     skeleton: {
       heartType: 0,
       numJumps: 1,
@@ -55,7 +59,7 @@ export default {
     	rate: 1000, // the amount milliseconds between firing
     	slow: 15, // the amount a hit devides the enemy speed
     	shell: 1, // the amount of arrows fired per shot
-    	range: 200, // how far arrows will travel
+    	range: 100, // how far arrows will travel
     	pierce: 1, // the amount of enemies an arrow can hit before dying
     	push: 20,
     	spreadX: 20,  // the amount that the bullets deviate up/down

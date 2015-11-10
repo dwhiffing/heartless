@@ -5,7 +5,7 @@ import constants from './Constants'
 export default class Enemy extends Entity {
 	// Enemy is abstract
 	constructor(game) {
-		super(game, 200, 200, 'enemy')
+		super(game, -200, -200, 'enemy')
 		this.score = 100
 		this.name = "Enemy"
 		this.stats = constants.enemy
@@ -28,19 +28,16 @@ export default class Enemy extends Entity {
 	}
 
 	reset(x, y, type, color) {
-		let colorName = helpers.typeToHex(color)
-		this.tint = colorName
-		this.heartType = color
-		this.tint = colorName
+		this.tint = constants.enemy.hex[color]
 		if (typeof type == "number") {
-			type = helpers.typeToEnemy(type)
+			type = constants.enemy.names[type]
 		}
-
 		this.maxHealth = this.stats[type].maxHealth
 		this.numJumps = this.stats[type].numJumps
 		this.minSpeed = this.stats[type].minSpeed
 		this.maxSpeed = this.stats[type].maxSpeed
 
+		this.heartType = color
 		this.runSpeed = this.game.rnd.integerInRange(this.minSpeed, this.maxSpeed)
 
 		let frameRate = parseInt(this.runSpeed/25, 10)
@@ -64,7 +61,7 @@ export default class Enemy extends Entity {
 				this.game.interface.showTitle()
 			}
 
-			this.game.blasts.get(this.x, this.y-20, 0.2, helpers.typeToHex(this.heartType))
+			this.game.blasts.get(this.x, this.y-20, 0.2, constants.enemy.hex[this.heartType])
 			this.game.updateScore(this.score, this.x, this.y-100)
 		}
 		super.kill()
