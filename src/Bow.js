@@ -69,7 +69,6 @@ export default class Bow {
 			if (newStats['abs_'+n]) {
 				abs = true
 			}
-			console.log(n, abs)
 			let things = newStats['abs_'+n] ? newStats['abs_'+n] : newStats[n]
 			if (typeof this.stats[n] !== 'number' || abs) {
 				this.stats[n] = things

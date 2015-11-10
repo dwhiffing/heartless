@@ -7,7 +7,7 @@ export default class EnemyManager {
   constructor(game) {
     this.game = game
     game.enemies = game.add.group()
-    this.rates = [1,1,1,1]
+    this.rates = [10,10,10,10]
     this._rates = [1,1,1,1]
 
     for (var i = 0; i < 55; i++) {

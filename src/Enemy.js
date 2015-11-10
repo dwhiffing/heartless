@@ -2,8 +2,10 @@ import Entity from './Entity'
 import helpers from'./helpers'
 import constants from './Constants'
 
+let numLanes = 2
+
+// should make lanes more dynamic
 export default class Enemy extends Entity {
-	// Enemy is abstract
 	constructor(game) {
 		super(game, -200, -200, 'enemy')
 		this.score = 100
@@ -14,10 +16,12 @@ export default class Enemy extends Entity {
 		this.animations.add("helmet", [6, 7, 8, 7], 4, true)
 		this.animations.add("fly", [9, 10, 11, 10], 4, true)
 		this.kill()
+		this.startY = this.game.height/4
+		this.laneSize = (this.startY-50) / numLanes
 	}
 
 	update() {
-	  this.z = this.y+this.x
+	  this.z = this.y
 		if(this.x > this.game.width/2+50) {
 	    this.kill()
 	  }
@@ -36,6 +40,7 @@ export default class Enemy extends Entity {
 		this.numJumps = this.stats[type].numJumps
 		this.minSpeed = this.stats[type].minSpeed
 		this.maxSpeed = this.stats[type].maxSpeed
+		this.enemyTimeout = false
 
 		this.heartType = color
 		this.runSpeed = this.game.rnd.integerInRange(this.minSpeed, this.maxSpeed)
@@ -44,10 +49,15 @@ export default class Enemy extends Entity {
 		frameRate = Math.max(2, frameRate)
 		this.animations.play(type,frameRate)
 
-		let y = 15 * this.game.rnd.integerInRange(8, 15)
+		let y = this.game.height/4 + (this.laneSize * this.game.rnd.integerInRange(1, numLanes))
+		console.log(y)
 	  super.reset(-30, y, this.maxHealth)
 		this.jumpDamage = this.health/this.numJumps
 		this.body.velocity.x = this.runSpeed
+	}
+
+	getLane() {
+		return this.y / this.laneSize - 8
 	}
 
 	kill() {
@@ -79,10 +89,44 @@ export default class Enemy extends Entity {
 	  }, this)
 
 		this.alpha = 0.5
-		this.body.velocity.x /= slow
-		if (!this.jumpedOn) {
-			this.game.add.tween(this).to( {x: this.x-push}, 500, Phaser.Easing.Quadratic.Out, true).start()
+		if (this.x > 50) {
+			this.body.velocity.x /= slow
+			if (!this.jumpedOn) {
+				this.game.add.tween(this).to( {x: this.x-push}, 500, Phaser.Easing.Quadratic.Out, true).start()
+			}
 		}
+	}
+
+	switchLane() {
+		let size = this.laneSize
+
+		//check below
+		//check above
+		let amt = this.game.rnd.integerInRange(1, 2) == 1 ? this.y-size : this.y+size
+
+		if (amt >= this.startY + numLanes * this.laneSize) {
+			size = -this.laneSize
+		} else if (amt <= this.startY) {
+			size = this.laneSize
+		}
+		this.game.add.tween(this).to({y:amt + size}, 300, Phaser.Easing.Quadratic.Out, true).start()
+
+		let speed = this.body.velocity.x
+		this.body.velocity.x = 5
+		this.game.time.events.add(300, () => this.body.velocity.x = speed)
+	}
+
+	overlapEnemy(enemy) {
+		// should check if can move up/down based on number of lanes and whether there are enemies in the way or not
+		// if it cant move up or down, it should match the speed of the enemy in front of it
+		// if it can move up or down, it should slow down to a set speed and move to that lane at a speed based on the run speed
+		if (this.enemyTimeout || this === enemy) return
+		if (this.x > enemy.x || this.y !== enemy.y) return
+
+		this.enemyTimeout = true
+		this.game.time.events.add(500, () => this.enemyTimeout = false)
+
+		this.switchLane()
 	}
 
 	jump() {

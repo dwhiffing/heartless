@@ -89,7 +89,7 @@ export default {
     		speed: 12 * y,
     		abs_rate: 50 + Math.pow(16 - y, 2),
     		radius: 0.02 * y,
-    		range: -7 * y,
+    		range: 4 * y,
     		slow: 1,
     		spreadX: 5 * y,
     		spreadY: 0.1 * y,
@@ -104,9 +104,9 @@ export default {
     		speed: 5 * b,
     		shell: Math.ceil(1.2 * b),
     		rate: 15 * b,
-    		range: -2 * b,
+    		range: 3 * b,
     		spreadX: 3 * b,
-    		spreadY: 10 * b,
+    		spreadY: 6 * b,
     		pierce: 2 * b
       }
   	},

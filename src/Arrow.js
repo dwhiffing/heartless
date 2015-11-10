@@ -21,6 +21,7 @@ export default class Arrow extends Phaser.Sprite {
 
   	this.health = opts.health
   	this.animations.play(opts.type)
+    this.range = opts.range + this.game.rnd.integerInRange(this.range * -6)
     this.scale.setTo(opts.sizeX, opts.sizeY)
 
   	this.body.velocity.x = -opts.speed + this.getSpeed(opts.spreadX)

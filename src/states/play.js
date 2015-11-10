@@ -47,6 +47,10 @@ export default {
       this.game.arrows, this.game.enemies,
       (a, e) => {a.overlapEntity(e)}, null, this
     )
+    this.game.physics.arcade.overlap(
+      this.game.enemies, this.game.enemies,
+      (e1, e2) => {e1.overlapEnemy(e2)}, null, this
+    )
   },
 
   render() {
